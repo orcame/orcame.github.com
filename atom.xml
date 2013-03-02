@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Orcame Code INFINITY]]></title>
+  <link href="http://orcame.github.com/atom.xml" rel="self"/>
+  <link href="http://orcame.github.com/"/>
+  <updated>2013-03-02T16:56:32+08:00</updated>
+  <id>http://orcame.github.com/</id>
+  <author>
+    <name><![CDATA[orcame]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[hello git world]]></title>
+    <link href="http://orcame.github.com/blog/2013/03/02/hello-git-world/"/>
+    <updated>2013-03-02T16:25:00+08:00</updated>
+    <id>http://orcame.github.com/blog/2013/03/02/hello-git-world</id>
+    <content type="html"><![CDATA[<div style="width:100%;font-size:30pt;color:#333;text-align:center;">
+Hello Github</div>
+
+
+<br/>
+
+
+<div>AMAZING WORLD</div>
+
+]]></content>
+  </entry>
+  
+</feed>
