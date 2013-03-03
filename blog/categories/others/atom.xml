@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Code Infinity]]></title>
-  <link href="http://www.orcame.com/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Others | Code Infinity]]></title>
+  <link href="http://www.orcame.com/blog/categories/others/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
   <updated>2013-03-03T12:02:35+08:00</updated>
   <id>http://www.orcame.com/</id>
