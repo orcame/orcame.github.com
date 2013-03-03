@@ -8,18 +8,17 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	color: red;
 }
 .infinity::before{
-	content: '{';
+	content: '<';
 	margin-right: 20px;
 }
 .infinity::after{
-	content: '}';
+	content: '/>';
 	margin-left: 20px;
 }
 .infinity em{
 	font-style: inherit;
 	line-height: 1;
 	display: inline-block;
-	vertical-align: middle;
 	white-space: nowrap;
 	-webkit-animation: Open 1.5s ease-out forwards, Show 3.5s forwards;
 	-moz-animation: Open 1.5s ease-out forwards, Show 3.5s forwards;
