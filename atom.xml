@@ -4,7 +4,7 @@
   <title><![CDATA[Code Infinity]]></title>
   <link href="http://www.orcame.com/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-03-03T23:05:51+08:00</updated>
+  <updated>2013-03-04T23:09:13+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -12,6 +12,115 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[测试代码高亮]]></title>
+    <link href="http://www.orcame.com/blog/2013/03/04/code-hightlight/"/>
+    <updated>2013-03-04T22:47:00+08:00</updated>
+    <id>http://www.orcame.com/blog/2013/03/04/code-hightlight</id>
+    <content type="html"><![CDATA[<h2>Javascript</h2>
+
+<figure class='code'><figcaption><span>这是一段javascript代码</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>      <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;click on &#39;</span><span class="o">+</span><span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!-- more -->
+
+
+<h2>C</h2>
+
+<figure class='code'><figcaption><span>这是一段C语言代码</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">void</span> <span class="nf">main</span><span class="p">(){</span>
+</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>C Sharp</h2>
+
+<figure class='code'><figcaption><span>这是一段C#代码</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Human</span><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">private</span> <span class="kt">string</span> <span class="n">name</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">public</span> <span class="nf">Human</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">){</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">=</span><span class="n">name</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">public</span> <span class="k">void</span> <span class="nf">SayHi</span><span class="p">(){</span>
+</span><span class='line'>      <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;Hi, I am {0}. Nice to meet you.&quot;</span><span class="p">,</span><span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Golang</h2>
+
+<figure class='code'><figcaption><span>这是一段golang代码</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nx">fmt</span> <span class="s">&quot;fmt&quot;</span>  <span class="c1">// Package implementing formatted I/O.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Hello, world; or Καλημέρα κόσμε; or こんにちは 世界\n&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Python</h2>
+
+<figure class='code'><figcaption><span>这是一段Python代码</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/python</span>
+</span><span class='line'><span class="c"># Filename: mymodule.py</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">sayhi</span><span class="p">():</span>
+</span><span class='line'>  <span class="k">print</span> <span class="s">&#39;Hi, this is mymodule speaking.&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">version</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># End of mymodule.py</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GitHub + Octopress 搭建个人Blog]]></title>

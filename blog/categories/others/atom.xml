@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Others | Code Infinity]]></title>
   <link href="http://www.orcame.com/blog/categories/others/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-03-03T23:05:51+08:00</updated>
+  <updated>2013-03-04T23:09:13+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -12,6 +12,93 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[测试代码高亮]]></title>
+    <link href="http://www.orcame.com/blog/2013/03/04/code-hightlight/"/>
+    <updated>2013-03-04T22:47:00+08:00</updated>
+    <id>http://www.orcame.com/blog/2013/03/04/code-hightlight</id>
+    <content type="html"><![CDATA[<h2>Javascript</h2>
+
+<p>``` js 这是一段javascript代码</p>
+
+<pre><code>$(function(){
+    $('div').click(function(){
+        alert('click on '+$(this).attr('name'));
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<!-- more -->
+
+
+<h2>C</h2>
+
+<p>``` c 这是一段C语言代码</p>
+
+<pre><code>void main(){
+    printf("hello world");
+}
+</code></pre>
+
+<p>```</p>
+
+<h2>C Sharp</h2>
+
+<p>``` c# 这是一段C#代码</p>
+
+<pre><code>public class Human{
+
+    private string name;
+
+    public Human(string name){
+        this.name=name;
+    }
+
+    public void SayHi(){
+        Console.WriteLine(String.Format("Hi, I am {0}. Nice to meet you.",this.name));
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<h2>Golang</h2>
+
+<p>``` go 这是一段golang代码</p>
+
+<pre><code>package main
+
+import fmt "fmt"  // Package implementing formatted I/O.
+
+
+func main() {
+    fmt.Printf("Hello, world; or Καλημέρα κόσμε; or こんにちは 世界\n")
+}
+</code></pre>
+
+<p>```</p>
+
+<h2>Python</h2>
+
+<p>``` python 这是一段Python代码</p>
+
+<pre><code>#!/usr/bin/python
+# Filename: mymodule.py
+
+def sayhi():
+    print 'Hi, this is mymodule speaking.'
+
+version = '0.1'
+
+# End of mymodule.py
+</code></pre>
+
+<p>```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GitHub + Octopress 搭建个人Blog]]></title>
