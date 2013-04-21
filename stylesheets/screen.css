@@ -5,7 +5,8 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	text-shadow: 1px 1px 2px rgba(255,0,0,0.9);
 	vertical-align:bottom;
 	margin-left:30px;
-	color: red;
+	/*color: red;*/
+	color:#aaa;
 }
 .infinity::before{
 	content: '<';
@@ -24,7 +25,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	-moz-animation: Open 1.5s ease-out forwards, Show 3.5s forwards;
 }
 html{
-	webkit-filter: grayscale(100%);
+	-webkit-filter: grayscale(100%);
 	-moz-filter: grayscale(100%);
 	-ms-filter: grayscale(100%);
 	-o-filter: grayscale(100%);
