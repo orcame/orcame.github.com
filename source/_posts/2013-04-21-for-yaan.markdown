@@ -1,0 +1,8 @@
+---
+layout: post
+title: "愿生者平安，逝者安息"
+date: 2013-04-21 22:02
+comments: true
+categories: Others
+---
+ {% img /images/image-post/yaan.jpg %}
