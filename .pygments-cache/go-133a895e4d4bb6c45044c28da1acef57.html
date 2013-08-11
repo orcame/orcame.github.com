@@ -1,0 +1,17 @@
+<div class="highlight"><pre><span class="c1">// 变量声明</span>
+<span class="kd">var</span> <span class="nx">i</span> <span class="kt">int</span>
+<span class="kd">var</span> <span class="nx">str</span> <span class="kt">string</span><span class="p">=</span><span class="s">&quot;hello golang&quot;</span>
+
+<span class="c1">// 在一个语句中声明多个变量</span>
+<span class="kd">var</span> <span class="nx">x</span><span class="p">,</span><span class="nx">y</span><span class="p">,</span><span class="nx">z</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span>
+
+<span class="c1">// 可以根据变量值反推变量类型</span>
+<span class="kd">var</span> <span class="nx">value</span><span class="p">=</span><span class="mi">100</span><span class="c1">//这里的value是int类型</span>
+
+<span class="c1">// 如果在**函数体内部**</span>
+<span class="c1">// 可以这样声明变量</span>
+<span class="kd">func</span> <span class="nx">demo</span><span class="p">(){</span>
+	<span class="nx">inner</span><span class="o">:=</span><span class="kc">true</span> <span class="c1">//这里相当于 var inner int=100</span>
+	<span class="o">...</span>
+<span class="p">}</span>
+</pre></div>

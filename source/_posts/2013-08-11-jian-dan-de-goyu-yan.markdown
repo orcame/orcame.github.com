@@ -1,0 +1,327 @@
+---
+layout: post
+title: "简单的Go语言"
+date: 2013-08-11 19:35
+comments: true
+categories: 
+---
+最近小小的看了下Golang，这里记录一下相当初级的语法规则。
+
+## Hello Go
+``` go hello go
+package main
+import fmt "fmt"  // 导入fmt库，用于IO操作，这里import 相当于C中的#include
+func main() {
+	fmt.Printf("Hello, golang")
+}
+```
+
+import 还可以写成下面的样式
+``` go import 补充
+import(
+	"fmt"
+	"math"
+)
+```
+<!-- more -->
+## 变量
+golang是**静态语言**，变量声明需要类型。
+具体请看下面代码示例：
+
+``` go 关于变量
+// 变量声明
+var i int
+var str string="hello golang"
+
+// 在一个语句中声明多个变量
+var x,y,z int = 2,4,8
+
+// 可以根据变量值反推变量类型
+var value=100//这里的value是int类型
+
+// 如果在**函数体内部**
+// 可以这样声明变量
+func demo(){
+	inner:=true //这里相当于 var inner int=100
+	...
+}
+```
+
+## 常量
+常量部分官方的说法是：  
+> + Constants are declared like variables, but with the const keyword.  
+> + Constants can be character, string, boolean, or numeric values.  
+> + Constants cannot be declared using the := syntax.  
+
+意思就是：
+> + 常量的声明和变量类似，用**const**关键字
+> + 常量只能是内置类型，例如:char,string,boolean,int,floag...
+> + 常量不能用 := 的方式声明
+
+``` go 声明一个常量
+const con string = "这个是常量"
+//对比
+var val string = "这是一个变量"
+
+
+const err := "这是错误的常量声明方式."
+//对比
+var right := "这是正确的变量声明方式."
+
+```
+
+golang 的内置类型包括以下几种  
+
+> * bool
+> * string
+> * int, int8, int16, int32, int64
+> * uint, uint8, uint16, uint32, uint64, uintptr
+> + byte // alias for uint8
+> + rune // alias for int32
+> + float32, float64
+> + complex64, complex128
+
+## 数组与切片
+### 数组
+
+``` go 数组的定义
+
+var arr [10]int //这样定义的数组初始值为[0,0,0,0,0,0,0,0,0,0]
+
+arr:=[3]int{0,1,2} //这样的语句只能出现在function内部
+
+var arr2 [3][3]int //这是一个二维数组
+
+len(arr) //用内置len方法获取数组长度
+```
+### 切片
+``` go 切片操作
+arr :=[5]int{0,1,2,3,4}
+slice :=arr[1:4] //arr下标1～3的内容，不包括a[4]
+
+slice =arr[1:] //arr[1] 到arr[4]，即1到结尾，包括结尾
+
+slice =arr[:4] //arr[0] 到arr[3], 不包括arr[4]
+```
+**注意：**数组的赋值是copy式的，见如下代码：
+
+``` go 数组和切片的操作
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	arr1 := [5]int{1,2,3,4,5}//这样的声明是一个数组(长度是数组类型的一部分)
+	slice1 := []int{1,2,3,4,5}//这样的声明是一个切片
+	arr2 :=arr1 //arr2是arr1的一个副本
+	slice2 :=slice1 //slice2是slice1的一个引用
+
+	fmt.Println("arr1:",arr1)
+	fmt.Println("arr2:",arr2)
+	fmt.Println("slice1:",slice1)
+	fmt.Println("slice2:",slice2)
+
+	arr2[3]=100
+	slice2[3]=300
+
+	fmt.Println("---after change arr2[3]=100 & slice2[3]=300---")
+	fmt.Println("arr1:",arr1)
+	fmt.Println("arr2:",arr2)
+	fmt.Println("slice1:",slice1)
+	fmt.Println("slice2:",slice2)
+
+	slice4arr:=arr1[1:4] //slice4arr是对arr1[1,2,3]的一个引用
+	slice4arr[2]=400 //slice4arr[2]指向的是arr1[3]
+
+	fmt.Println("---after change slice4arr[2]=400---")
+	fmt.Println("arr1:",arr1)
+	fmt.Println("arr2:",arr2)
+	fmt.Println("slice1:",slice1)
+	fmt.Println("slice2:",slice2)
+}
+
+```
+程序的输出是：
+
+``` go 数组和切片操作结果
+	arr1: [1 2 3 4 5]
+	arr2: [1 2 3 4 5]
+	slice1: [1 2 3 4 5]
+	slice2: [1 2 3 4 5]
+	---after change arr2[3]=100 & slice2[3]=300---
+	arr1: [1 2 3 4 5]
+	arr2: [1 2 3 100 5]
+	slice1: [1 2 3 300 5]
+	slice2: [1 2 3 300 5]
+	---after change slice4arr[2]=400---
+	arr1: [1 2 3 400 5]
+	arr2: [1 2 3 100 5]
+	slice1: [1 2 3 300 5]
+	slice2: [1 2 3 300 5]
+```
+## if语句
+
+golang中if语句是没有小括号()的，但必须包括花括号{},并且**{符号不能放置在下一行**（这个约定其实和golang中的分号;有关)
+
+``` go if 语句
+//这是正确的写法
+if true{
+	//do something...
+}
+
+//这是错误的写法
+if true
+{
+	//do something...
+}
+
+//if -else if -else 语句
+if a>0{
+	...
+}else if a==0{
+	...
+}else {
+	...
+}
+
+```
+
+## switch 语句
+
+switch 同if一样没有小括号，但必须有花括号。case不需要break，可以用逗号分割多个值.**{符号不能放置在下一行**
+``` go switch 语句
+
+switch value{
+	case 1:
+		fmt.Println("eq one")
+	case 2,3,4:
+		fmt.Println("lt five")
+	default:
+		fmt.Println("lt one or gt four)
+}
+
+```
+
+## for 循环
+golang中for循环有三种形式, 同if一样没有小括号，但必须有花括号。**{符号不能放置在下一行**
+``` go for loop
+
+//init;condition;post 形式
+for idx:=0;idx<len(arr);idx++{
+	fmt.Println(arr[idx])
+}
+
+//only condition 形式
+
+idx:=0
+for idx<len(arr){
+	fmt.Println(arr[idx])
+	idx++
+}
+
+//forever
+
+for{
+	fmt.Println("Never die")
+}
+```
+
+***golang 中没有 while语句，for语句已经包含了while的功能***
+
+## 函数
+
+golang中函数的声明和C略有不同，返回值类型放在了后面
+``` go golang中的函数声明
+func sum(a int, b int) int{
+	return a+b
+}
+//也可以写成下面这样：
+func sum(a,b int) int{
+	return a+b
+}
+//函数可以有不定个数的参数
+
+func sum(values ...int){
+	var total int = 0
+	for _,v :=range values{ 
+				//这里用了一个变量 _，golang中如果一个变量声明了但没有使用是不允许的，所以有了这个特殊的_
+				//对于_，golang在编译的时候不会做0使用的验证。如果需要访问下标，可以写作for idx,value :=range values....
+		total+=v
+	}
+	return total
+}
+
+//函数还可以闭包，熟悉js的人对这个不会陌生
+
+func next() func() int{
+	i:=0
+	return func()int{
+		return i++
+	}
+}
+
+//调用：
+nextInt :=next()
+for{
+	fmt.Println(nextInt())
+}
+
+
+```
+## 结构体
+还是看代码吧
+``` go 结构体
+type Panda struct{
+	name string
+	weight int
+	description string
+}
+
+//结构体的初始化有一下几种方式
+
+var paul Panda=Panda{"Paul",1000,"神龙大侠"}
+//或者
+var paul Panda=Panda{name:"Paul",description:"神龙大侠",weight:1000}
+
+```
+结构体的方法是比较特殊的，同C#等不同，不能在结构体内部声明，需要如此这般
+``` go 结构体方法
+
+func (p *Panda) Box(){
+	fmt.Println("打出一记肥猫拳")
+}
+
+func (p *Panda) Kick(){
+	fmt.Println("佛山无影脚，阿达～～～～")
+}
+
+```
+
+**注意:** golang中没有访问限制关键之，public，private，protected等，约定首字母大写的方法即为public(可以被别的包访问)
+
+## 接口
+接口是这样定义的
+
+``` go interface定义
+type swordsman{ //大侠会打拳和踢人
+	Box()
+	Kick()
+} 
+```
+**注意** golang中的接口是不需要显示继承的，golang认为有A的功能就是一个A，这里就是**会打拳和踢人的就是大侠**，那么Panda已经实现了swordsman接口，paul是一个大侠了
+
+``` go 看看作为大侠的paul
+var paul Panda=Panda{"Paul",1000,"神龙大侠"}
+var sw swardsman=&paul
+sw.Box()
+sw.Kick()
+
+```
+
+## 关于分号;
+golang 的唯一需要分号的地方是作为for循环中的init;condition;post分割符;在编译代码过程中，词法分析器会自动的为代码添加上分号，所以写代码的时候不需要写分号。词法分析器添加分号的规则是：  
+> 行尾最后一个token（这当然不包括注释）是一个标识符，数值、字符串等字面值，或者++,--,break, fallthrough,continue, return中的一个
+
+按照以上规则，**千万不要尝试在将for，switch，if等代码体的{写到下一行，因为这样会导致在{之前加入一个分号(;),引起错误。**

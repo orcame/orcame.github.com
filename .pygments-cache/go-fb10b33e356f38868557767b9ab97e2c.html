@@ -1,0 +1,19 @@
+<div class="highlight"><pre><span class="c1">//init;condition;post 形式</span>
+<span class="k">for</span> <span class="nx">idx</span><span class="o">:=</span><span class="mi">0</span><span class="p">;</span><span class="nx">idx</span><span class="p">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">);</span><span class="nx">idx</span><span class="o">++</span><span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">idx</span><span class="p">])</span>
+<span class="p">}</span>
+
+<span class="c1">//only condition 形式</span>
+
+<span class="nx">idx</span><span class="o">:=</span><span class="mi">0</span>
+<span class="k">for</span> <span class="nx">idx</span><span class="p">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">){</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">idx</span><span class="p">])</span>
+	<span class="nx">idx</span><span class="o">++</span>
+<span class="p">}</span>
+
+<span class="c1">//forever</span>
+
+<span class="k">for</span><span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Never die&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>

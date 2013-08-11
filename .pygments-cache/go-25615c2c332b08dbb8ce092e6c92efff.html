@@ -1,0 +1,18 @@
+<div class="highlight"><pre><span class="kd">func</span> <span class="nx">sum</span><span class="p">(</span><span class="nx">a</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span><span class="p">{</span>
+	<span class="k">return</span> <span class="nx">a</span><span class="o">+</span><span class="nx">b</span>
+<span class="p">}</span>
+<span class="c1">//也可以写成下面这样：</span>
+<span class="kd">func</span> <span class="nx">sum</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span><span class="p">{</span>
+	<span class="k">return</span> <span class="nx">a</span><span class="o">+</span><span class="nx">b</span>
+<span class="p">}</span>
+<span class="c1">//函数可以有不定个数的参数</span>
+
+<span class="kd">func</span> <span class="nx">sum</span><span class="p">(</span><span class="nx">values</span> <span class="o">...</span><span class="kt">int</span><span class="p">){</span>
+	<span class="kd">var</span> <span class="nx">total</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span><span class="nx">v</span> <span class="o">:=</span><span class="k">range</span> <span class="nx">values</span><span class="p">{</span> <span class="c1">//这里用了一个变量 _，golang中如果一个变量声明了但没有使用是不允许的，所以有了这个特殊的_</span>
+				<span class="c1">//对于_，golang在编译的时候不会做0使用的验证。如果需要访问下标，可以写作for idx,value :=range values....</span>
+		<span class="nx">total</span><span class="o">+=</span><span class="nx">v</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">total</span>
+<span class="p">}</span>
+</pre></div>

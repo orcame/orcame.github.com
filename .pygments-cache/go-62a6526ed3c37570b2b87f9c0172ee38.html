@@ -1,0 +1,8 @@
+<div class="highlight"><pre><span class="nx">arr</span> <span class="o">:=</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">}</span>
+<span class="nx">slice</span> <span class="o">:=</span><span class="nx">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="c1">//arr下标1～3的内容，不包括a[4]</span>
+
+<span class="nx">slice</span> <span class="p">=</span><span class="nx">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="c1">//arr[1] 到arr[4]，即1到结尾，包括结尾</span>
+
+<span class="nx">slice</span> <span class="p">=</span><span class="nx">arr</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="c1">//arr[0] 到arr[3], 不包括arr[4]</span>
+<span class="o">**</span><span class="err">注意：</span><span class="o">**</span><span class="err">数组的赋值是</span><span class="nx">copy</span><span class="err">式的，见如下代码：</span>
+</pre></div>
