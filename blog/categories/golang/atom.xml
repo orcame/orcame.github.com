@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: golang | Code Infinity]]></title>
+  <link href="http://www.orcame.com/blog/categories/golang/atom.xml" rel="self"/>
+  <link href="http://www.orcame.com/"/>
+  <updated>2013-08-11T22:48:16+08:00</updated>
+  <id>http://www.orcame.com/</id>
+  <author>
+    <name><![CDATA[orcame]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[简单的Go语言]]></title>
+    <link href="http://www.orcame.com/blog/2013/08/11/jian-dan-de-goyu-yan/"/>
+    <updated>2013-08-11T19:35:00+08:00</updated>
+    <id>http://www.orcame.com/blog/2013/08/11/jian-dan-de-goyu-yan</id>
+    <content type="html"><![CDATA[<p>最近小小的看了下Golang，这里记录一下相当初级的语法规则。</p>
+
+<h2>Hello Go</h2>
+
+<p>``` go hello go
+package main
+import fmt "fmt"  // 导入fmt库，用于IO操作，这里import 相当于C中的#include
+func main() {</p>
+
+<pre><code>fmt.Printf("Hello, golang")
+</code></pre>
+
+<p>}
+```</p>
+
+<p>import 还可以写成下面的样式
+``` go import 补充
+import(</p>
+
+<pre><code>"fmt"
+"math"
+</code></pre>
+
+<p>)
+```</p>
+
+<!-- more -->
+
+
+<h2>变量</h2>
+
+<p>golang是<strong>静态语言</strong>，变量声明需要类型。
+具体请看下面代码示例：</p>
+
+<p>``` go 关于变量
+// 变量声明
+var i int
+var str string="hello golang"</p>
+
+<p>// 在一个语句中声明多个变量
+var x,y,z int = 2,4,8</p>
+
+<p>// 可以根据变量值反推变量类型
+var value=100//这里的value是int类型</p>
+
+<p>// 如果在<strong>函数体内部</strong>
+// 可以这样声明变量
+func demo(){</p>
+
+<pre><code>inner:=true //这里相当于 var inner int=100
+...
+</code></pre>
+
+<p>}
+```</p>
+
+<h2>常量</h2>
+
+<p>常量部分官方的说法是：</p>
+
+<blockquote><ul>
+<li>Constants are declared like variables, but with the const keyword.</li>
+<li>Constants can be character, string, boolean, or numeric values.</li>
+<li>Constants cannot be declared using the := syntax.</li>
+</ul>
+</blockquote>
+
+<p>意思就是：</p>
+
+<blockquote><ul>
+<li>常量的声明和变量类似，用<strong>const</strong>关键字</li>
+<li>常量只能是内置类型，例如:char,string,boolean,int,floag...</li>
+<li>常量不能用 := 的方式声明</li>
+</ul>
+</blockquote>
+
+<p>``` go 声明一个常量
+const con string = "这个是常量"
+//对比
+var val string = "这是一个变量"</p>
+
+<p>const err := "这是错误的常量声明方式."
+//对比
+var right := "这是正确的变量声明方式."</p>
+
+<p>```</p>
+
+<p>golang 的内置类型包括以下几种</p>
+
+<blockquote><ul>
+<li>bool</li>
+<li>string</li>
+<li>int, int8, int16, int32, int64</li>
+<li>uint, uint8, uint16, uint32, uint64, uintptr</li>
+<li>byte // alias for uint8</li>
+<li>rune // alias for int32</li>
+<li>float32, float64</li>
+<li>complex64, complex128</li>
+</ul>
+</blockquote>
+
+<h2>数组与切片</h2>
+
+<h3>数组</h3>
+
+<p>``` go 数组的定义</p>
+
+<p>var arr [10]int //这样定义的数组初始值为[0,0,0,0,0,0,0,0,0,0]</p>
+
+<p>arr:=[3]int{0,1,2} //这样的语句只能出现在function内部</p>
+
+<p>var arr2 [3][3]int //这是一个二维数组</p>
+
+<p>len(arr) //用内置len方法获取数组长度
+```</p>
+
+<h3>切片</h3>
+
+<p>``` go 切片操作
+arr :=[5]int{0,1,2,3,4}
+slice :=arr[1:4] //arr下标1～3的内容，不包括a[4]</p>
+
+<p>slice =arr[1:] //arr[1] 到arr[4]，即1到结尾，包括结尾</p>
+
+<p>slice =arr[:4] //arr[0] 到arr[3], 不包括arr[4]
+```
+<strong>注意：</strong>数组的赋值是copy式的，见如下代码：</p>
+
+<p>``` go 数组和切片的操作
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+</code></pre>
+
+<p>)</p>
+
+<p>func main() {</p>
+
+<pre><code>arr1 := [5]int{1,2,3,4,5}//这样的声明是一个数组(长度是数组类型的一部分)
+slice1 := []int{1,2,3,4,5}//这样的声明是一个切片
+arr2 :=arr1 //arr2是arr1的一个副本
+slice2 :=slice1 //slice2是slice1的一个引用
+
+fmt.Println("arr1:",arr1)
+fmt.Println("arr2:",arr2)
+fmt.Println("slice1:",slice1)
+fmt.Println("slice2:",slice2)
+
+arr2[3]=100
+slice2[3]=300
+
+fmt.Println("---after change arr2[3]=100 &amp; slice2[3]=300---")
+fmt.Println("arr1:",arr1)
+fmt.Println("arr2:",arr2)
+fmt.Println("slice1:",slice1)
+fmt.Println("slice2:",slice2)
+
+slice4arr:=arr1[1:4] //slice4arr是对arr1[1,2,3]的一个引用
+slice4arr[2]=400 //slice4arr[2]指向的是arr1[3]
+
+fmt.Println("---after change slice4arr[2]=400---")
+fmt.Println("arr1:",arr1)
+fmt.Println("arr2:",arr2)
+fmt.Println("slice1:",slice1)
+fmt.Println("slice2:",slice2)
+</code></pre>
+
+<p>}</p>
+
+<p>```
+程序的输出是：</p>
+
+<p>``` go 数组和切片操作结果</p>
+
+<pre><code>arr1: [1 2 3 4 5]
+arr2: [1 2 3 4 5]
+slice1: [1 2 3 4 5]
+slice2: [1 2 3 4 5]
+---after change arr2[3]=100 &amp; slice2[3]=300---
+arr1: [1 2 3 4 5]
+arr2: [1 2 3 100 5]
+slice1: [1 2 3 300 5]
+slice2: [1 2 3 300 5]
+---after change slice4arr[2]=400---
+arr1: [1 2 3 400 5]
+arr2: [1 2 3 100 5]
+slice1: [1 2 3 300 5]
+slice2: [1 2 3 300 5]
+</code></pre>
+
+<p>```</p>
+
+<h2>if语句</h2>
+
+<p>golang中if语句是没有小括号()的，但必须包括花括号{},并且<strong>{符号不能放置在下一行</strong>（这个约定其实和golang中的分号;有关)</p>
+
+<p>``` go if 语句
+//这是正确的写法
+if true{</p>
+
+<pre><code>//do something...
+</code></pre>
+
+<p>}</p>
+
+<p>//这是错误的写法
+if true
+{</p>
+
+<pre><code>//do something...
+</code></pre>
+
+<p>}</p>
+
+<p>//if -else if -else 语句
+if a>0{</p>
+
+<pre><code>...
+</code></pre>
+
+<p>}else if a==0{</p>
+
+<pre><code>...
+</code></pre>
+
+<p>}else {</p>
+
+<pre><code>...
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<h2>switch 语句</h2>
+
+<p>switch 同if一样没有小括号，但必须有花括号。case不需要break，可以用逗号分割多个值.<strong>{符号不能放置在下一行</strong>
+``` go switch 语句</p>
+
+<p>switch value{</p>
+
+<pre><code>case 1:
+    fmt.Println("eq one")
+case 2,3,4:
+    fmt.Println("lt five")
+default:
+    fmt.Println("lt one or gt four)
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<h2>for 循环</h2>
+
+<p>golang中for循环有三种形式, 同if一样没有小括号，但必须有花括号。<strong>{符号不能放置在下一行</strong>
+``` go for loop</p>
+
+<p>//init;condition;post 形式
+for idx:=0;idx&lt;len(arr);idx++{</p>
+
+<pre><code>fmt.Println(arr[idx])
+</code></pre>
+
+<p>}</p>
+
+<p>//only condition 形式</p>
+
+<p>idx:=0
+for idx&lt;len(arr){</p>
+
+<pre><code>fmt.Println(arr[idx])
+idx++
+</code></pre>
+
+<p>}</p>
+
+<p>//forever</p>
+
+<p>for{</p>
+
+<pre><code>fmt.Println("Never die")
+</code></pre>
+
+<p>}
+```</p>
+
+<p><strong><em>golang 中没有 while语句，for语句已经包含了while的功能</em></strong></p>
+
+<h2>函数</h2>
+
+<p>golang中函数的声明和C略有不同，返回值类型放在了后面
+``` go golang中的函数声明
+func sum(a int, b int) int{</p>
+
+<pre><code>return a+b
+</code></pre>
+
+<p>}
+//也可以写成下面这样：
+func sum(a,b int) int{</p>
+
+<pre><code>return a+b
+</code></pre>
+
+<p>}
+//函数可以有不定个数的参数</p>
+
+<p>func sum(values ...int){</p>
+
+<pre><code>var total int = 0
+for _,v :=range values{ 
+            //这里用了一个变量 _，golang中如果一个变量声明了但没有使用是不允许的，所以有了这个特殊的_
+            //对于_，golang在编译的时候不会做0使用的验证。如果需要访问下标，可以写作for idx,value :=range values....
+    total+=v
+}
+return total
+</code></pre>
+
+<p>}</p>
+
+<p>//函数还可以闭包，熟悉js的人对这个不会陌生</p>
+
+<p>func next() func() int{</p>
+
+<pre><code>i:=0
+return func()int{
+    return i++
+}
+</code></pre>
+
+<p>}</p>
+
+<p>//调用：
+nextInt :=next()
+for{</p>
+
+<pre><code>fmt.Println(nextInt())
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<h2>结构体</h2>
+
+<p>还是看代码吧
+``` go 结构体
+type Panda struct{</p>
+
+<pre><code>name string
+weight int
+description string
+</code></pre>
+
+<p>}</p>
+
+<p>//结构体的初始化有一下几种方式</p>
+
+<p>var paul Panda=Panda{"Paul",1000,"神龙大侠"}
+//或者
+var paul Panda=Panda{name:"Paul",description:"神龙大侠",weight:1000}</p>
+
+<p><code>
+结构体的方法是比较特殊的，同C#等不同，不能在结构体内部声明，需要如此这般
+</code> go 结构体方法</p>
+
+<p>func (p *Panda) Box(){</p>
+
+<pre><code>fmt.Println("打出一记肥猫拳")
+</code></pre>
+
+<p>}</p>
+
+<p>func (p *Panda) Kick(){</p>
+
+<pre><code>fmt.Println("佛山无影脚，阿达～～～～")
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p><strong>注意:</strong> golang中没有访问限制关键之，public，private，protected等，约定首字母大写的方法即为public(可以被别的包访问)</p>
+
+<h2>接口</h2>
+
+<p>接口是这样定义的</p>
+
+<p>``` go interface定义
+type swordsman{ //大侠会打拳和踢人</p>
+
+<pre><code>Box()
+Kick()
+</code></pre>
+
+<p>}
+```
+<strong>注意</strong> golang中的接口是不需要显示继承的，golang认为有A的功能就是一个A，这里就是<strong>会打拳和踢人的就是大侠</strong>，那么Panda已经实现了swordsman接口，paul是一个大侠了</p>
+
+<p>``` go 看看作为大侠的paul
+var paul Panda=Panda{"Paul",1000,"神龙大侠"}
+var sw swardsman=&amp;paul
+sw.Box()
+sw.Kick()</p>
+
+<p>```</p>
+
+<h2>关于分号;</h2>
+
+<p>golang 的唯一需要分号的地方是作为for循环中的init;condition;post分割符;在编译代码过程中，词法分析器会自动的为代码添加上分号，所以写代码的时候不需要写分号。词法分析器添加分号的规则是：</p>
+
+<blockquote><p>行尾最后一个token（这当然不包括注释）是一个标识符，数值、字符串等字面值，或者++,--,break, fallthrough,continue, return中的一个</p></blockquote>
+
+<p>按照以上规则，<strong>千万不要尝试在将for，switch，if等代码体的{写到下一行，因为这样会导致在{之前加入一个分号(;),引起错误。</strong></p>
+]]></content>
+  </entry>
+  
+</feed>
