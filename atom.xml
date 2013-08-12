@@ -4,7 +4,7 @@
   <title><![CDATA[Code Infinity]]></title>
   <link href="http://www.orcame.com/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-08-11T22:48:16+08:00</updated>
+  <updated>2013-08-12T20:25:15+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -534,7 +534,7 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">type</span> <span class="nx">swordsman</span><span class="p">{</span> <span class="c1">//大侠会打拳和踢人</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">type</span> <span class="nx">swordsman</span> <span class="kd">interface</span><span class="p">{</span> <span class="c1">//大侠会打拳和踢人</span>
 </span><span class='line'>  <span class="nx">Box</span><span class="p">()</span>
 </span><span class='line'>  <span class="nx">Kick</span><span class="p">()</span>
 </span><span class='line'><span class="p">}</span>
