@@ -21,7 +21,7 @@ date_format: "ordinal"
 subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
-email:
+email: orcame@outlook.com
 
 # ----------------------- #
 #    Jekyll & Plugins     #
@@ -95,7 +95,7 @@ disqus_short_name: orcame
 disqus_show_comment_count: true
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-44585503-1
 
 # Facebook Like
 facebook_like: false

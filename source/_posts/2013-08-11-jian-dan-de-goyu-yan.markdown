@@ -3,7 +3,7 @@ layout: post
 title: "简单的Go语言"
 date: 2013-08-11 19:35
 comments: true
-categories: 
+categories: golang
 ---
 最近小小的看了下Golang，这里记录一下相当初级的语法规则。
 
@@ -305,7 +305,7 @@ func (p *Panda) Kick(){
 接口是这样定义的
 
 ``` go interface定义
-type swordsman{ //大侠会打拳和踢人
+type swordsman interface{ //大侠会打拳和踢人
 	Box()
 	Kick()
 } 

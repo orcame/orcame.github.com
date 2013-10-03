@@ -3,7 +3,7 @@ layout: post
 title: "简单的Go语言"
 date: 2013-08-11 19:35
 comments: true
-categories: 
+categories: golang
 ---
 最近小小的看了下Golang，这里记录一下相当初级的语法规则。
 
@@ -23,7 +23,7 @@ import(
 	"math"
 )
 ```
-
+<!-- more -->
 ## 变量
 golang是**静态语言**，变量声明需要类型。
 具体请看下面代码示例：
