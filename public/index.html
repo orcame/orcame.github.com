@@ -176,7 +176,7 @@ func main &hellip;">
   
   
     <footer>
-      <a class="btn btn-default" rel="full-article" href="/blog/2013/08/11/jian-dan-de-goyu-yan/">Read on &rarr;</a>
+      <a class="btn btn-default btn-link pull-right no-text-decoration no-padding" rel="full-article" href="/blog/2013/08/11/jian-dan-de-goyu-yan/">&gt; Read on</a>
     </footer>
   
 
@@ -272,7 +272,7 @@ func main &hellip;">
   
   
     <footer>
-      <a class="btn btn-default" rel="full-article" href="/blog/2013/03/04/code-hightlight/">Read on &rarr;</a>
+      <a class="btn btn-default btn-link pull-right no-text-decoration no-padding" rel="full-article" href="/blog/2013/03/04/code-hightlight/">&gt; Read on</a>
     </footer>
   
 
@@ -320,7 +320,7 @@ func main &hellip;">
   
   
     <footer>
-      <a class="btn btn-default" rel="full-article" href="/blog/2013/03/02/hello-git-world/">Read on &rarr;</a>
+      <a class="btn btn-default btn-link pull-right no-text-decoration no-padding" rel="full-article" href="/blog/2013/03/02/hello-git-world/">&gt; Read on</a>
     </footer>
   
 
@@ -331,11 +331,11 @@ func main &hellip;">
 
     <ul class="pager">
       
-        <li class="previous disabled"><a href="#">&larr;&nbsp;Older</a></li>
+        <li class="previous disabled"><a href="#">Older</a></li>
       
-      <li><a href="/blog/archives">Blog Archives</a></li>
+      <li class="archive"><a href="/blog/archives">Blog Archives</a></li>
       
-        <li class="next disabled"><a href="#">Newer&nbsp;&rarr;</a></li>
+        <li class="next disabled"><a href="#">Newer</a></li>
       
     </ul>
   </div>
@@ -343,7 +343,7 @@ func main &hellip;">
   
     <aside class="sidebar col-md-3">
       
-        <section class="panel panel-default">
+        <section class="panel panel-default no-border-radius">
   <div class="panel-heading">
     <h3 class="panel-title">Recent Posts</h3>
   </div>
@@ -375,7 +375,7 @@ func main &hellip;">
   </ul>
 </section>
 
-<section class="panel panel-default clearfix">
+<section class="panel panel-default clearfix no-border-radius">
   <div class="panel-heading">
       <h3 class="panel-title">GitHub Repos</h3>
   </div>
@@ -408,6 +408,43 @@ func main &hellip;">
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+        <h3 class="panel-title">Coderwall</h3>
+  </div>
+  <div class="list-group" id="cw_repos">
+    <p class="loading">Status updating&#8230;</p>
+  </div>
+  
+    <div class="gh-profile-link pull-right text-muted">
+      <a href="https://coderwall.com/orcame">@orcame</a> on CoderWall
+    </div>
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        coderwall.showRepos({
+            user: 'orcame',
+            target: '#cw_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/coderwall.js" type="text/javascript"> </script>
+  <style type="text/css">
+  #cw_repos img{
+      margin-top:15px;
+      margin-bottom:15px;
+  }
+  </style>
+</section>
 
 
 

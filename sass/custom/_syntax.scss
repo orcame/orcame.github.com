@@ -1,17 +1,11 @@
-/* boostrap fix & integration */
-body {
-    figure.code {
-        padding: 0;
-        .highlight {
-            code {
-                @include border-radius(0);
-            }
-            pre {
-                white-space: pre;
-            }
-            .gutter {
-                display: none;
-            }
-        }
+figure.code:not(.panel) {
+    /* unpatched code_block or include_code plugin */
+    @include border-radius(0);
+    .highlight {
+        @include border-radius(0);
+        @include border-top-radius(0);
+    }
+    figcaption {
+        @include border-radius(0);
     }
 }

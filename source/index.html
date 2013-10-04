@@ -17,15 +17,15 @@ navbar: Blog
 
     <ul class="pager">
       {% if paginator.next_page %}
-        <li class="previous"><a href="{{paginator.next_page}}">&larr;&nbsp;Older</a></li>
+        <li class="previous"><a href="{{paginator.next_page}}">Older</a></li>
       {% else %}
-        <li class="previous disabled"><a href="#">&larr;&nbsp;Older</a></li>
+        <li class="previous disabled"><a href="#">Older</a></li>
       {% endif %}
-      <li><a href="/blog/archives">Blog Archives</a></li>
+      <li class="archive"><a href="/blog/archives">Blog Archives</a></li>
       {% if paginator.previous_page %}
-        <li class="next"><a href="{{paginator.previous_page}}">Newer&nbsp;&rarr;</a></li>
+        <li class="next"><a href="{{paginator.previous_page}}">Newer</a></li>
       {% else %}
-        <li class="next disabled"><a href="#">Newer&nbsp;&rarr;</a></li>
+        <li class="next disabled"><a href="#">Newer</a></li>
       {% endif %}
     </ul>
   </div>
