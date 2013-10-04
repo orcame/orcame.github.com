@@ -308,7 +308,7 @@ $(function(){ $(&#39;div&#39;).click(function(){ alert(&#39;click on &#39;+$(thi
   
   <aside class="sidebar col-md-3">
     
-      <section class="panel panel-default">
+      <section class="panel panel-default no-border-radius">
   <div class="panel-heading">
     <h3 class="panel-title">Recent Posts</h3>
   </div>
@@ -340,7 +340,7 @@ $(function(){ $(&#39;div&#39;).click(function(){ alert(&#39;click on &#39;+$(thi
   </ul>
 </section>
 
-<section class="panel panel-default clearfix">
+<section class="panel panel-default clearfix no-border-radius">
   <div class="panel-heading">
       <h3 class="panel-title">GitHub Repos</h3>
   </div>
@@ -373,6 +373,46 @@ $(function(){ $(&#39;div&#39;).click(function(){ alert(&#39;click on &#39;+$(thi
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+        <h3 class="panel-title">Coderwall</h3>
+  </div>
+  <div class="list-group" id="cw_repos">
+    <p class="loading">Status updating...</p>
+  </div>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        cw_user ='orcame';
+        console.log(cw_user)
+        $.ajax({
+          url:'https://coderwall.com/'+cw_user+'.json',
+          type:'jsonp',
+          error:function(data){
+            console.log(data);
+            $('#cw_repos').empty();
+          },
+          success:function(data){
+            var t=$('#cw_repos').empty();
+            var url='https://coderwall.com/'+data.username;
+            var a=$('<a />').addClass('list-group-item').attr('href',url).append('<h4 class="list-group-item-heading">'+ data.user +'</h4>').append('<p>'+data.location+'</p>');
+            $t.append(a);
+            var row;
+            $.each(data.badges,function(idx){
+              if(idx%4==0){
+                row=$('<div class="row list-group-item"/>');               
+              }
+              var col=$('<div class="col-md-3"></div>');
+              var a=$('<a></a>').attr('href',url).attr('title',this.description);
+              var img=$('<img />').attr('alt',this.description).attr('src',this.badge);
+              a.append(img).appendTo(col);
+              row.append(col).appendTo(t);
+            })
+          }
+        })
+    });
+  </script>
+</section>
 
 
 
