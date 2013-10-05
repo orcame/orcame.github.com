@@ -1,7 +1,7 @@
 var coderwall = (function(){
 	function render(target,res){
     	var i = 0, fragment = '', t = $(target);
-    	var url='https://coderwall/com/'+res.username;
+    	var url='https://coderwall.com/'+res.username;
     	var lgi=$('<div "list-group-item"/>'),ct=$('<div class="container"/>'),row;
     	for(i = 0; i < res.badges.length; i++) {
     		var v=res.badges[i];
@@ -9,7 +9,7 @@ var coderwall = (function(){
     			row=$('<div class="row"/>').appendTo(ct);
     		}
     		fragment='<div class="col-md-4">';
-    		fragment+='<a class="" href="'+url+'" title="'+v.description+'">';
+    		fragment+='<a target="_blank" class="" href="'+url+'" title="'+v.description+'">';
     		fragment+='<img class="img-responsive" alt="'+v.description+'" src="'+v.badge+'"/>';
     		fragment+='</a>';
     		fragment+='</div>';

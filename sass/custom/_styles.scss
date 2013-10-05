@@ -43,6 +43,15 @@ footer[role=contentinfo] {
   padding:0 !important;
 }
 
+.clear-ba{
+  
+}
+
+.clear-ba:after,.clear-ba:before{
+  content:'' !important;
+  padding:0;
+}
+
 @mixin pager-link-before($content:'\2014',$padding:0.3em){
   content: $content;
   padding: $padding;

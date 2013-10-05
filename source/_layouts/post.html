@@ -20,10 +20,10 @@ single: true
         {% if page.previous.url or page.next.url %}
           <ul class="meta text-muted pager">
             {% if page.previous.url %}
-            <li class="previous"><a href="{{page.previous.url}}" title="Previous Post: {{page.previous.title}}">&laquo; {{page.previous.title}}</a></li>
+            <li class="previous"><a class="clear-ba"  href="{{page.previous.url}}" title="Previous Post: {{page.previous.title}}">&laquo; {{page.previous.title}}</a></li>
             {% endif %}
             {% if page.next.url %}
-            <li class="next"><a href="{{page.next.url}}" title="Next Post: {{page.next.title}}">{{page.next.title}} &raquo;</a></li>
+            <li class="next"><a class="clear-ba" href="{{page.next.url}}" title="Next Post: {{page.next.title}}">{{page.next.title}} &raquo;</a></li>
             {% endif %}
           </ul>
         {% endif %}

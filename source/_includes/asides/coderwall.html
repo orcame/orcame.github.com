@@ -8,7 +8,7 @@
   </div>
   {% if site.coderwall_show_profile_link %}
     <div class="gh-profile-link pull-right text-muted">
-      <a href="https://coderwall.com/{{site.coderwall_user}}">@{{site.coderwall_user}}</a> on CoderWall
+      <a target="_blank" href="https://coderwall.com/{{site.coderwall_user}}">@{{site.coderwall_user}}</a> on CoderWall
     </div>
   {% endif %}
   <script type="text/javascript">
@@ -22,7 +22,7 @@
         }
 
         coderwall.showRepos({
-            user: '{{site.github_user}}',
+            user: '{{site.coderwall_user}}',
             target: '#cw_repos'
         });
     });
