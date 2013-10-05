@@ -174,6 +174,10 @@
   <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.orcame.com/blog/2013/04/21/for-yaan/" data-via="" data-counturl="http://www.orcame.com/blog/2013/04/21/for-yaan/" >Tweet</a>
   
   
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
   
 </div>
 
@@ -181,10 +185,10 @@
         
           <ul class="meta text-muted pager">
             
-            <li class="previous"><a href="/blog/2013/03/04/code-hightlight/" title="Previous Post: 测试代码高亮">&laquo; 测试代码高亮</a></li>
+            <li class="previous"><a class="clear-ba"  href="/blog/2013/03/04/code-hightlight/" title="Previous Post: 测试代码高亮">&laquo; 测试代码高亮</a></li>
             
             
-            <li class="next"><a href="/blog/2013/08/11/jian-dan-de-goyu-yan/" title="Next Post: 简单的Go语言">简单的Go语言 &raquo;</a></li>
+            <li class="next"><a class="clear-ba" href="/blog/2013/08/11/jian-dan-de-goyu-yan/" title="Next Post: 简单的Go语言">简单的Go语言 &raquo;</a></li>
             
           </ul>
         
@@ -236,6 +240,39 @@
 
 <section class="panel panel-default clearfix no-border-radius">
   <div class="panel-heading">
+      <h3 class="panel-title">External Links</h3>
+  </div>
+  <div class="list-group" id="el_repos">
+  </div>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        var links=[
+          {
+            'name':'Windows Azure Training Kit',
+            'description':'hands-on labs, presentations, and samples',
+            'url':'http://azuretk.com'
+          },
+          {
+            'name':'Blair CHEN',
+            'description':'blchen的工作总结和日常开发笔记',
+            'url':'http://blchen.com'
+          }
+        ]
+        var t=$('#el_repos'), item=$('<div class="list-group-item"/>');
+        $.each(links,function(){
+          var h=$('<h4 class="list-group-item-heading">')
+            .append('<a target="_blank" href="'+this.url+'">'+this.name+'</a>');
+          var p=$('<p class="text-muted"/>').text(this.description);
+          item.append(h,p);
+        })
+        t.append(item);
+    });
+  </script>
+</section>
+
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
       <h3 class="panel-title">GitHub Repos</h3>
   </div>
   <div class="list-group" id="gh_repos">
@@ -243,7 +280,7 @@
   </div>
   
     <div class="gh-profile-link pull-right text-muted">
-      <a href="https://github.com/orcame">@orcame</a> on GitHub
+      <a target="_blank" href="https://github.com/orcame">@orcame</a> on GitHub
     </div>
   
   <script type="text/javascript">
@@ -277,7 +314,7 @@
   </div>
   
     <div class="gh-profile-link pull-right text-muted">
-      <a href="https://coderwall.com/orcame">@orcame</a> on CoderWall
+      <a target="_blank" href="https://coderwall.com/orcame">@orcame</a> on CoderWall
     </div>
   
   <script type="text/javascript">
@@ -351,7 +388,24 @@
 
 
 
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
 
 
 
