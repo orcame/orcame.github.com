@@ -448,6 +448,46 @@ $(function(){ $(&#39;div&#39;).click(function(){ alert(&#39;click on &#39;+$(thi
   </style>
 </section>
 
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+      <h3 class="panel-title">Sina Weibo</h3>
+  </div>
+  <div id="weibo_repos"></div>
+  <script type="text/javascript">
+    $(document).ready(function(){
+    	var weibo={
+    		uid:'1363171432',
+    		verifier: '5f5a5107', 
+			language: 'zh_cn',
+			height: '350',
+			fans: 0,
+			title: false,
+			weibo: true,
+			speed: '0',
+			showRepos:function(){
+				var iframe=$('<iframe class="share_self" frameborder="0" scrolling="no" width="100%"></iframe>');
+				var src="http://widget.weibo.com/weiboshow/index.php?width=0&ptype=1&skin=1&noborder=1&dpc=1";
+				src+="&language="+this.language;
+				src+="&height="+this.height;
+				if(this.fans>0){
+					src+="&fansRow="+this.fans;
+					src+="&isFans=1";
+				}
+				src+="&speed="+this.speed;
+				src+="&isTitle="+(this.title?1:0);
+				src+="&isWeibo="+(this.weibo?1:0);
+				src+="&uid="+this.uid;
+				src+="&verifier="+this.verifier;
+
+				iframe.attr('src',src).attr('height',this.height).appendTo($('#weibo_repos'));
+			}
+    	};
+    	weibo.showRepos();
+    });
+  </script>
+</section>
+
+
 
 
 
