@@ -24,25 +24,24 @@ body header > hgroup {
   vertical-align:bottom;
   margin-left:30px;
   color: red;
-}
-.infinity::before{
-  content: '<';
-  margin-right: 20px;
+  &:before{
+    content: '<';
+    margin-right: 20px;    
+  }
+  &:after{
+    content: '/>';
+    margin-left: 20px;
+  }
+  em{
+    font-style: inherit;
+    line-height: 1;
+    display: inline-block;
+    white-space: nowrap;
+    -webkit-animation: Open 1.5s ease-out forwards, Show 3.5s forwards;
+    -moz-animation: Open 1.5s ease-out forwards, Show 3.5s forwards;
+  }
 }
 
-.infinity::after{
-  content: '/>';
-  margin-left: 20px;
-}
-
-.infinity em{
-  font-style: inherit;
-  line-height: 1;
-  display: inline-block;
-  white-space: nowrap;
-  -webkit-animation: Open 1.5s ease-out forwards, Show 3.5s forwards;
-  -moz-animation: Open 1.5s ease-out forwards, Show 3.5s forwards;
-}
 @-webkit-keyframes Open{0%,66%{width:0}100%{width:260px}}
 @-moz-keyframes Open{0%,66%{width:0}100%{width:260px}}
 @-webkit-keyframes Show{0%,40%{opacity:0}100%{opacity:1}}

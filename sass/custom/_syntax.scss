@@ -4,6 +4,9 @@ figure.code:not(.panel) {
     .highlight {
         @include border-radius(0);
         @include border-top-radius(0);
+        .line-numbers span{
+        	white-space: nowrap;
+        }
     }
     figcaption {
         @include border-radius(0);

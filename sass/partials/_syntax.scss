@@ -22,7 +22,10 @@ figcaption + .highlight, html figcaption + .gist .gist-file .gist-syntax .gist-h
     @include box-shadow(lighten($base02, 2) -1px 0 inset);
     text-shadow: darken($base02, 10) 0 -1px;
   }
-  span { color: $base01 !important; }
+  span { 
+    color: $base01 !important; 
+    white-space: nowrap;
+  }
   padding: .8em !important;
   @include border-radius(0);
 }
@@ -103,7 +106,7 @@ html .gist .gist-file {
   span { color: $base1 !important; }
   span { font-style: normal !important; font-weight: normal !important; }
 
-  .c      { color: $base01 !important; font-style: italic !important; }                     /* Comment */
+  .c      { color: $base01 !important; font-style: italic !important; white-space:nowrap; }                     /* Comment */
   .cm     { color: $base01 !important; font-style: italic !important; }                     /* Comment.Multiline */
   .cp     { color: $base01 !important; font-style: italic !important;  }                     /* Comment.Preproc */
   .c1     { color: $base01 !important; font-style: italic !important; }                     /* Comment.Single */

@@ -8,14 +8,20 @@
   <meta name="author" content="orcame">
 
   
-  <meta name="description" content="最近小小的看了下Golang，这里记录一下相当初级的语法规则。 Hello Go hello go1
+  <meta name="description" content="Copy your vm file(*.vhd for example) to a folder, D:\boot eg. Open cmd as administrator command line script1
 2
 3
 4
 5
-package main
-import fmt &quot;fmt&quot; // 导入fmt库，用于IO操作，这里import 相当于C中的#include
-func main &hellip;">
+6
+7
+8
+9
+10
+11
+12
+13
+rem {current &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -110,6 +116,78 @@ func main &hellip;">
   <div class="page-content col-md-9">
     <div class="blog-index">
       
+      
+      
+        <article class="post">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-07T19:51:00+08:00" pubdate data-updated="true">Oct 7<span>th</span>, 2013</time>
+        
+           | <a href="/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/#disqus_thread"
+             data-disqus-identifier="http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/">Comments</a>
+        
+      </p>
+    
+    
+      <h1 class="entry-title"><a href="/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/">How to Edit Boot Menu by Bcedit</a></h1>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Copy your vm file(*.vhd for example) to a folder, D:\boot eg.</p>
+
+<p>Open cmd as administrator</p>
+
+<figure class='code'><figcaption><span>command line script</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">rem {current} is a identifier id. can also specifier the identifier id. This is used to backup the {current} setting, ignore it if you dont want. </span>
+</span><span class='line'><span class="c">rem **strongly recommend**</span>
+</span><span class='line'>bcdedit <span class="n">/copy</span> {current} <span class="n">/d</span> <span class="s2">&quot;current_backup&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">rem set the device(the vhd file)</span>
+</span><span class='line'>bcdedit <span class="n">/set</span> {current} device vhd<span class="o">=</span>[d:]\vhd path to file
+</span><span class='line'><span class="c">rem bcdedit /set {current} device vhd=[d:]\boot\xxxx.vhd for example.</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">rem set the osdevice(same path of the device)</span>
+</span><span class='line'>bcdedit <span class="n">/set</span> {current} osdevice vhd<span class="o">=</span>[d:]\vhd path to file
+</span><span class='line'>
+</span><span class='line'><span class="c">rem set the default boot item(ignore this if you dont want make the new system as the default one)</span>
+</span><span class='line'>bcdedit <span class="n">/set</span> {bootmgr} default {current} <span class="n">//guid.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>reboot os and enjoy the new system.</p>
+</div>
+  
+  
+
+
+        </article>
       
       
         <article class="post">
@@ -350,6 +428,8 @@ func main &hellip;">
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/">How to Edit Boot Menu by Bcedit</a>
+    
     <a class="list-group-item " href="/blog/2013/08/11/jian-dan-de-goyu-yan/">简单的Go语言</a>
     
     <a class="list-group-item " href="/blog/2013/04/21/for-yaan/">愿生者平安，逝者安息</a>
@@ -371,6 +451,7 @@ func main &hellip;">
   <ul id="categories">
     <li class='category'><a href='/blog/categories/others/'>Others (3)</a></li>
 <li class='category'><a href='/blog/categories/golang/'>golang (1)</a></li>
+<li class='category'><a href='/blog/categories/howto/'>howto (1)</a></li>
 
   </ul>
 </section>
@@ -478,6 +559,16 @@ func main &hellip;">
   }
   </style>
 </section>
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+      <h3 class="panel-title">Sina Weibo</h3>
+  </div>
+  <div id="weibo_repos">
+  	<iframe width="100%" height="350" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=zh_cn&amp;width=0&amp;height=350&amp;ptype=1&amp;speed=&amp;skin=1&amp;isTitle=0&amp;noborder=0&amp;isWeibo=0&amp;uid=3835412420&amp;verifier=61ac6817&amp;dpc=1"></iframe>
+  </div>
+</section>
+
 
 
 
