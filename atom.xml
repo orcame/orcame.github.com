@@ -4,7 +4,7 @@
   <title><![CDATA[Code Infinity]]></title>
   <link href="http://www.orcame.com/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-10-06T10:30:11+08:00</updated>
+  <updated>2013-10-07T20:12:40+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -12,6 +12,48 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[how to edit boot menu by bcedit]]></title>
+    <link href="http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/"/>
+    <updated>2013-10-07T19:51:00+08:00</updated>
+    <id>http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit</id>
+    <content type="html"><![CDATA[<p>Copy your vm file(*.vhd for example) to a folder, D:\boot eg.</p>
+
+<p>Open cmd as administrator</p>
+
+<figure class='code'><figcaption><span>command line script</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">rem {current} is a identifier id. can also specifier the identifier id. This is used to backup the {current} setting, ignore it if you dont want. </span>
+</span><span class='line'><span class="c">rem **strongly recommend**</span>
+</span><span class='line'>bcdedit <span class="n">/copy</span> {current} <span class="n">/d</span> <span class="s2">&quot;current_backup&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">rem set the device(the vhd file)</span>
+</span><span class='line'>bcdedit <span class="n">/set</span> {current} device vhd<span class="o">=</span>[d:]\vhd path to file
+</span><span class='line'><span class="c">rem bcdedit /set {current} device vhd=[d:]\boot\xxxx.vhd for example.</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">rem set the osdevice(same path of the device)</span>
+</span><span class='line'>bcdedit <span class="n">/set</span> {current} osdevice vhd<span class="o">=</span>[d:]\vhd path to file
+</span><span class='line'>
+</span><span class='line'><span class="c">rem set the default boot item(ignore this if you dont want make the new system as the default one)</span>
+</span><span class='line'>bcdedit <span class="n">/set</span> {bootmgr} default {current} <span class="n">//guid.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>reboot os and enjoy the new system.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[简单的Go语言]]></title>
