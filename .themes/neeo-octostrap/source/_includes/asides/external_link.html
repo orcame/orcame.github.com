@@ -1,0 +1,33 @@
+{% if site.show_external_link %}
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+      <h3 class="panel-title">External Links</h3>
+  </div>
+  <div class="list-group" id="el_repos">
+  </div>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        var links=[
+          {
+            'name':'Windows Azure Training Kit',
+            'description':'hands-on labs, presentations, and samples',
+            'url':'http://azuretk.com'
+          },
+          {
+            'name':'Blair CHEN',
+            'description':'blchen的工作总结和日常开发笔记',
+            'url':'http://blchen.com'
+          }
+        ]
+        var t=$('#el_repos'), item=$('<div class="list-group-item"/>');
+        $.each(links,function(){
+          var h=$('<h4 class="list-group-item-heading">')
+            .append('<a target="_blank" href="'+this.url+'">'+this.name+'</a>');
+          var p=$('<p class="text-muted"/>').text(this.description);
+          item.append(h,p);
+        })
+        t.append(item);
+    });
+  </script>
+</section>
+{% endif %}

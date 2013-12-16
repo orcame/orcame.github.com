@@ -1,0 +1,110 @@
+/* nice sticky footer, from http://getbootstrap.com/examples/sticky-footer/ */
+html, body {
+    height: 100%;
+    /* The html and body elements cannot have any padding or margin. */
+}
+/* Wrapper for page content to push down footer */
+#wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  /* Negative indent footer by its height */
+  margin: 0 auto -60px;
+  /* Pad bottom by footer height */
+  padding: 0 0 60px;
+}
+
+/* Set the fixed height of the footer here */
+footer[role=contentinfo] {
+    height: 60px;
+}
+
+/* Remove the border of button and the border-radius of panel */
+
+.no-border{
+  border:0 !important;
+  a{
+    border:0 !important;
+  }
+}
+
+.no-border-radius{  
+  @include border-radius(0px !important);
+  a{
+    @include border-radius(0px !important);
+  }
+}
+
+.no-text-decoration{
+  text-decoration:none !important;
+}
+
+.no-padding{
+  padding:0 !important;
+}
+
+.clear-ba{
+  
+}
+
+.clear-ba:after,.clear-ba:before{
+  content:'' !important;
+  padding:0;
+}
+
+@mixin pager-link-before($content:'\2014',$padding:0.3em){
+  content: $content;
+  padding: $padding;
+  padding-left:0;
+}
+
+@mixin pager-link-after($content:'\2014',$padding:0.3em){
+  content: $content;
+  padding: $padding;
+  padding-right:0;
+}
+
+@mixin pager-link(){
+  border:0 !important;
+  font-size: 17px;
+  font-weight: bold;
+  padding-left:0;
+  padding-right:0;
+  &:hover{
+    background-color:transparent;
+  }
+}
+
+.pager 
+{
+  li{
+    &.archive{
+      a{
+        @include pager-link();
+        &:before{
+          @include pager-link-before();
+        }
+        &:after{
+          @include pager-link-after();
+        }
+      }
+    }
+    &.previous{
+      a{
+        @include pager-link();
+        &:before{
+          @include pager-link-before();
+        }
+      }
+    }
+    &.next{
+      a{
+        @include pager-link();
+        &:after{
+          @include pager-link-after();
+        }
+      }
+    }
+  }
+  
+}

@@ -1,0 +1,14 @@
+figure.code:not(.panel) {
+    /* unpatched code_block or include_code plugin */
+    @include border-radius(0);
+    .highlight {
+        @include border-radius(0);
+        @include border-top-radius(0);
+        .line-numbers span{
+        	white-space: nowrap;
+        }
+    }
+    figcaption {
+        @include border-radius(0);
+    }
+}
