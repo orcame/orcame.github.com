@@ -4,7 +4,7 @@
   <title><![CDATA[Code Infinity]]></title>
   <link href="http://www.orcame.com/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-12-26T10:15:14+08:00</updated>
+  <updated>2013-12-26T13:48:39+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -12,6 +12,51 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[git备忘录]]></title>
+    <link href="http://www.orcame.com/blog/2013/12/26/git-memo/"/>
+    <updated>2013-12-26T12:01:00+08:00</updated>
+    <id>http://www.orcame.com/blog/2013/12/26/git-memo</id>
+    <content type="html"><![CDATA[<h3>教程篇</h3>
+
+<p><a href="http://pcottle.github.io/learnGitBranching/">这里</a>是一个在线演示git工作过程的网站，看起来很高端的样子，mark一下。</p>
+
+<p><a href="https://code.csdn.net/DOC_CSDN/git_lxf">这里</a>是code.csdn.net上面的一个很不错的git教程，有文字，图片和视频</p>
+
+<!--more-->
+
+
+<h3>branch篇</h3>
+
+<p>Clone一个远端分支</p>
+
+<pre><code>git clone -b &lt;branch&gt; &lt;remote_repo&gt;
+//for example
+git clone -b my-branch git@github.com:user/respository.git
+</code></pre>
+
+<p>参考<a href="http://stackoverflow.com/questions/1911109/git-clone-a-specific-branch">这里</a></p>
+
+<h3>checkout篇</h3>
+
+<p>当遇到本地和服务器上的代码有冲突</p>
+
+<pre><code>git checkout filename 
+</code></pre>
+
+<p>用来撤销本地<em>指定</em>文件的更改</p>
+
+<pre><code>git checkout -- .
+</code></pre>
+
+<p>用来撤销本地<em>所有</em>文件的更改</p>
+
+<hr />
+
+<p><strong><center>——未完待续中——</center></strong></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[新换系统之吐槽ruby安装]]></title>
