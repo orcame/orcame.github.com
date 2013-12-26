@@ -1,0 +1,44 @@
+---
+layout: post
+title: "git备忘录"
+date: 2013-12-26 12:01
+comments: true
+categories: git 
+---
+
+###教程篇
+
+[这里](http://pcottle.github.io/learnGitBranching/)是一个在线演示git工作过程的网站，看起来很高端的样子，mark一下。
+
+[这里](https://code.csdn.net/DOC_CSDN/git_lxf)是code.csdn.net上面的一个很不错的git教程，有文字，图片和视频
+
+<!--more-->
+
+###branch篇
+Clone一个远端分支
+	git clone -b <branch> <remote_repo>
+	//for example
+	git clone -b my-branch git@github.com:user/respository.git
+
+参考[这里](http://stackoverflow.com/questions/1911109/git-clone-a-specific-branch)
+
+创建分支
+	git branch <branch>
+	//for example
+	git branch newbranch
+切换本地分支
+	git checkout <branch>
+创建远程分支，就是将本地分支push到远程
+	git push origin <branch>
+或者
+	git push origin <local_branch_name>:<remote_branch_name>
+
+###checkout篇
+当遇到本地和服务器上的代码有冲突
+	git checkout filename 
+用来撤销本地*指定*文件的更改
+	git checkout -- .
+用来撤销本地*所有*文件的更改
+
+---
+**<center>——未完待续中——</center>**
