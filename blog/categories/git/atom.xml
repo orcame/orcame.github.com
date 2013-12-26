@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | Code Infinity]]></title>
   <link href="http://www.orcame.com/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-12-26T14:35:47+08:00</updated>
+  <updated>2013-12-26T15:07:59+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -37,6 +37,28 @@ git clone -b my-branch git@github.com:user/respository.git
 </code></pre>
 
 <p>参考<a href="http://stackoverflow.com/questions/1911109/git-clone-a-specific-branch">这里</a></p>
+
+<p>创建分支</p>
+
+<pre><code>git branch &lt;branch&gt;
+//for example
+git branch newbranch
+</code></pre>
+
+<p>切换本地分支</p>
+
+<pre><code>git checkout &lt;branch&gt;
+</code></pre>
+
+<p>创建远程分支，就是将本地分支push到远程</p>
+
+<pre><code>git push origin &lt;branch&gt;
+</code></pre>
+
+<p>或者</p>
+
+<pre><code>git push origin &lt;local_branch_name&gt;:&lt;remote_branch_name&gt;
+</code></pre>
 
 <h3>checkout篇</h3>
 
