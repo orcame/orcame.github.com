@@ -4,6 +4,8 @@ title: "新换系统之吐槽ruby安装"
 date: 2013-12-25 22:53
 comments: true
 categories: linux
+keywords: ruby install
+description: install ruby1.9.3 on mint
 ---
 
 手贱把Ubuntu搞挂了，不要问我怎么搞的，我也不知道。刚刚好，觉得那个Unity环境真是非常非常非常非常非常无法忍受的难用到无与伦比。听说有个家伙叫mint，用了都说好。  

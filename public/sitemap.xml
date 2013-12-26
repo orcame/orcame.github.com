@@ -2,7 +2,7 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://www.orcame.com/blog/2013/03/02/hello-git-world/</loc>
-        <lastmod>2013-12-16T13:48:39+08:00</lastmod>
+        <lastmod>2013-12-26T15:53:31+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.orcame.com/blog/2013/03/04/code-hightlight/</loc>
@@ -14,33 +14,33 @@
     </url>
     <url>
         <loc>http://www.orcame.com/blog/2013/08/11/jian-dan-de-goyu-yan/</loc>
-        <lastmod>2013-12-16T13:48:39+08:00</lastmod>
+        <lastmod>2013-12-26T15:57:43+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/</loc>
-        <lastmod>2013-12-16T13:48:39+08:00</lastmod>
+        <lastmod>2013-12-26T15:56:55+08:00</lastmod>
     </url>
     <url>
         <loc>
             http://www.orcame.com/blog/2013/12/25/xin-huan-xi-tong-zhi-tu-cao-rubyan-zhuang/
         </loc>
-        <lastmod>2013-12-26T10:07:29+08:00</lastmod>
+        <lastmod>2013-12-26T15:57:39+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.orcame.com/blog/2013/12/26/git-memo/</loc>
-        <lastmod>2013-12-26T15:29:27+08:00</lastmod>
+        <lastmod>2013-12-26T15:57:43+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.orcame.com/blog/2013/12/26/octopress-multi-compoter/</loc>
-        <lastmod>2013-12-26T14:35:46+08:00</lastmod>
+        <lastmod>2013-12-26T15:55:41+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.orcame.com/blog/archives/</loc>
-        <lastmod>2013-12-26T15:29:27+08:00</lastmod>
+        <lastmod>2013-12-26T15:57:43+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.orcame.com/</loc>
-        <lastmod>2013-12-26T15:29:27+08:00</lastmod>
+        <lastmod>2013-12-26T15:57:43+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.orcame.com/javascripts/libs/bootstrap-3.0.0/components.html</loc>
@@ -60,7 +60,7 @@
     </url>
     <url>
         <loc>http://www.orcame.com/javascripts/libs/bootstrap-3.0.0/</loc>
-        <lastmod>2013-12-26T15:29:27+08:00</lastmod>
+        <lastmod>2013-12-26T15:57:43+08:00</lastmod>
     </url>
     <url>
         <loc>http://www.orcame.com/javascripts/libs/bootstrap-3.0.0/javascript.html</loc>

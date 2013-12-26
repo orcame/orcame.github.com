@@ -4,6 +4,8 @@ title: "简单的Go语言"
 date: 2013-08-11 19:35
 comments: true
 categories: golang
+keywords: golang
+description: golang basic syntax
 ---
 最近小小的看了下Golang，这里记录一下相当初级的语法规则。
 

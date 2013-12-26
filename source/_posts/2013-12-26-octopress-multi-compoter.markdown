@@ -4,6 +4,8 @@ title: 如何在多台电脑上使用Octopress写博客
 date: 2013-12-26 13:56
 comments: true
 categories: howto
+keywords: octopress,multi-computer
+description: 如何在多台电脑上使用Octopress写博客
 ---
 英文好的，请直接猛击[这里](http://blog.zerosharp.com/clone-your-octopress-to-blog-from-two-places/)。英文不好的，就听我啰嗦几句。
 

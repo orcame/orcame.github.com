@@ -4,6 +4,8 @@ title: "git备忘录"
 date: 2013-12-26 12:01
 comments: true
 categories: git 
+keywords: git
+description: git handbook
 ---
 
 ###教程篇

@@ -4,6 +4,8 @@ title: "how to edit boot menu by bcedit"
 date: 2013-10-07 19:51
 comments: true
 categories: howto
+keywords: boot menu, bcedit
+description: how to edit boot menu by bcedit
 ---
 
 Copy your vm file(*.vhd for example) to a folder, D:\boot eg.

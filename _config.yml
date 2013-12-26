@@ -10,6 +10,7 @@ author: orcame
 about_me: code is the constructor of the whole world.
 simple_search: http://google.com/search
 description: code is the constructor of the whole world.
+keywords: azure,golang,octopress,development,ajax,javascript,.net,mvc,web
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
