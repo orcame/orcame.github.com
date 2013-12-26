@@ -36,9 +36,21 @@ Clone一个远端分支
 ###checkout篇
 当遇到本地和服务器上的代码有冲突
 	git checkout filename 
-用来撤销本地*指定*文件的更改
+用来撤销本地**指定**文件的更改
 	git checkout -- .
-用来撤销本地*所有*文件的更改
+用来撤销本地**所有**文件的更改
+
+###url篇
+
+最近发现重新clone了代码做push操作的时候总是要输入用户名和密码，这非常讨厌，明明已经有了ssh key的。
+找来找去，原因是clone的时候用的是`https`的地址，例如
+	https://github.com/<user-name>/<repository>.git
+这个地址是不会走ssh验证的，需要更改为
+	git@github.com:<user-name>/<repository>.git
+这个地址可以从repository主页上，点击右边的clone URL下面的**SSH**按钮获得
+切换url的命令是
+	git remote set-url origin git@github.com:<user-name>/<repository>.git
+参考[这里](http://stackoverflow.com/questions/6565357/git-push-requires-username-and-password)
 
 ---
 **<center>——未完待续中——</center>**

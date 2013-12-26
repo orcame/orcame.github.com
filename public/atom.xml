@@ -4,7 +4,7 @@
   <title><![CDATA[Code Infinity]]></title>
   <link href="http://www.orcame.com/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-12-26T15:07:59+08:00</updated>
+  <updated>2013-12-26T15:29:38+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -133,12 +133,33 @@ git branch newbranch
 <pre><code>git checkout filename 
 </code></pre>
 
-<p>用来撤销本地<em>指定</em>文件的更改</p>
+<p>用来撤销本地<strong>指定</strong>文件的更改</p>
 
 <pre><code>git checkout -- .
 </code></pre>
 
-<p>用来撤销本地<em>所有</em>文件的更改</p>
+<p>用来撤销本地<strong>所有</strong>文件的更改</p>
+
+<h3>url篇</h3>
+
+<p>最近发现重新clone了代码做push操作的时候总是要输入用户名和密码，这非常讨厌，明明已经有了ssh key的。
+找来找去，原因是clone的时候用的是<code>https</code>的地址，例如</p>
+
+<pre><code>https://github.com/&lt;user-name&gt;/&lt;repository&gt;.git
+</code></pre>
+
+<p>这个地址是不会走ssh验证的，需要更改为</p>
+
+<pre><code>git@github.com:&lt;user-name&gt;/&lt;repository&gt;.git
+</code></pre>
+
+<p>这个地址可以从repository主页上，点击右边的clone URL下面的<strong>SSH</strong>按钮获得
+切换url的命令是</p>
+
+<pre><code>git remote set-url origin git@github.com:&lt;user-name&gt;/&lt;repository&gt;.git
+</code></pre>
+
+<p>参考<a href="http://stackoverflow.com/questions/6565357/git-push-requires-username-and-password">这里</a></p>
 
 <hr />
 
