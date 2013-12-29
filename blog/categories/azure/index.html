@@ -4,12 +4,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>how to edit boot menu by bcedit - Code Infinity</title>
+  <title>Category: azure - Code Infinity</title>
   <meta name="author" content="orcame">
 
   
-  <meta name="description" content="how to edit boot menu by bcedit">
-  <meta name="keywords" content="boot menu, bcedit">
+  <meta name="description" content="Category: azure">
+  <meta name="keywords" content="azure,golang,octopress,development,ajax,javascript,.net,mvc,web">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -17,7 +17,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit">
+  <link rel="canonical" href="http://www.orcame.comblog/categories/azure">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="Code Infinity" type="application/atom+xml">
 
@@ -67,10 +67,10 @@
 
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active">
+                <li >
                     <a href="/">Blog</a>
                 </li>
-                <li >
+                <li class="active">
                     <a href="/blog/archives">Archives</a>
                 </li>
             </ul>
@@ -101,145 +101,50 @@
         <div id="content">
           <div class="row">
   <div class="page-content col-md-9">
-    <article class="hentry" role="article">
+    <article role="article">
       
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
-        
-
-
-
-
-
+        <header class="page-header">
+          
+          
+            <h1 class="entry-title">
+              Category: Azure
+              
+            </h1>
+          
+        </header>
+      
+      <div class="entry-content">
+        <div id="blog-archives" class="category">
 
 
 
   
+  <h2>2013</h2>
+
+<article class="page-header">
+  
+<time datetime="2013-12-29T22:26:00+08:00" class="text-muted" pubdate><span class='month'>Dec</span> <span class='day'>29</span> <span class='year'>2013</span></time>
+<h1><a href="/blog/2013/12/29/iwindows-azure-sas-introduce/">Windows Azure Shared Access Signature简介</a></h1>
+
+<footer>
+  <span class="categories"><a class='category' href='/blog/categories/azure/'>azure</a></span>
+</footer>
 
 
-<time datetime="2013-10-07T19:51:00+08:00" pubdate data-updated="true">Oct 7<span>th</span>, 2013</time>
-        
-           | <a href="#disqus_thread"
-             data-disqus-identifier="http://www.orcame.com">Comments</a>
-        
-      </p>
-    
-    
-    <h1 class="entry-title">
-        How to Edit Boot Menu by Bcedit
-        
-    </h1>
-    
-  </header>
+</article>
 
-
-<div class="entry-content"><p>Copy your vm file(*.vhd for example) to a folder, D:\boot eg.</p>
-
-<p>Open cmd as administrator</p>
-
-<figure class='code'><figcaption><span>command line script</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">rem {current} is a identifier id. can also specifier the identifier id. This is used to backup the {current} setting, ignore it if you dont want. </span>
-</span><span class='line'><span class="c">rem **strongly recommend**</span>
-</span><span class='line'>bcdedit <span class="n">/copy</span> {current} <span class="n">/d</span> <span class="s2">&quot;current_backup&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">rem set the device(the vhd file)</span>
-</span><span class='line'>bcdedit <span class="n">/set</span> {current} device vhd<span class="o">=</span>[d:]\vhd path to file
-</span><span class='line'><span class="c">rem bcdedit /set {current} device vhd=[d:]\boot\xxxx.vhd for example.</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">rem set the osdevice(same path of the device)</span>
-</span><span class='line'>bcdedit <span class="n">/set</span> {current} osdevice vhd<span class="o">=</span>[d:]\vhd path to file
-</span><span class='line'>
-</span><span class='line'><span class="c">rem set the default boot item(ignore this if you dont want make the new system as the default one)</span>
-</span><span class='line'>bcdedit <span class="n">/set</span> {bootmgr} default {current} <span class="n">//guid.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>reboot os and enjoy the new system.</p>
 </div>
 
-
-      <footer>
-        <p class="meta text-muted">
-          
-  
-
-<span class="byline author vcard">Posted by <span class="fn">orcame</span></span>
-
-          
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-07T19:51:00+08:00" pubdate data-updated="true">Oct 7<span>th</span>, 2013</time>
-          
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/howto/'>howto</a>
-  
-</span>
-
-
-        </p>
-        
-          <div class="sharing">
-  
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/" data-via="" data-counturl="http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/" >Tweet</a>
-  
-  
-  <div class="g-plusone" data-size="medium"></div>
-  
-  
-    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-  
-</div>
-
-        
-        
-          <ul class="meta text-muted pager">
-            
-            <li class="previous"><a class="clear-ba"  href="/blog/2013/08/11/jian-dan-de-goyu-yan/" title="Previous Post: 简单的Go语言">&laquo; 简单的Go语言</a></li>
-            
-            
-            <li class="next"><a class="clear-ba" href="/blog/2013/12/25/xin-huan-xi-tong-zhi-tu-cao-rubyan-zhuang/" title="Next Post: 新换系统之吐槽ruby安装">新换系统之吐槽ruby安装 &raquo;</a></li>
-            
-          </ul>
-        
-      </footer>
+      </div>
+      
     </article>
-    
-      <section>
-        <h1>Comments</h1>
-        <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-      </section>
     
   </div>
 
   
-  <aside class="sidebar col-md-3">
-    
-      <section class="panel panel-default no-border-radius">
+    <aside class="sidebar col-md-3">
+      
+        <section class="panel panel-default no-border-radius">
   <div class="panel-heading">
     <h3 class="panel-title">Recent Posts</h3>
   </div>
@@ -254,7 +159,7 @@
     
     <a class="list-group-item " href="/blog/2013/12/25/xin-huan-xi-tong-zhi-tu-cao-rubyan-zhuang/">新换系统之吐槽ruby安装</a>
     
-    <a class="list-group-item active" href="/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/">How to Edit Boot Menu by Bcedit</a>
+    <a class="list-group-item " href="/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/">How to Edit Boot Menu by Bcedit</a>
     
   </div>
 </section>
@@ -406,8 +311,8 @@
 
 
 
-    
-  </aside>
+      
+    </aside>
   
 </div>
 
@@ -433,10 +338,7 @@
       var disqus_shortname = 'orcame';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/';
-        var disqus_url = 'http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
