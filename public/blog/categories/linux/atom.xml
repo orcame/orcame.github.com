@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Code Infinity]]></title>
   <link href="http://www.orcame.com/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-12-26T16:13:09+08:00</updated>
+  <updated>2013-12-29T22:44:50+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -101,6 +101,23 @@ Gemset '' does not exist, 'rvm ruby-1.9.3-p484 do rvm gemset create ' first, or 
 <h3>结论</h3>
 
 <p>至于ruby是怎么回事儿？为什么这样安装会产生这样的问题？不知道。linux小白玩linux就是太折腾。最后再吐槽一下，新换的房子网络真是垃圾到爆了，各种卡有没有？各种loading没完没了有没有？看个优酷都只能标清还得缓冲有没有？室友忽悠我搬过来的时候还各种骄傲的说网络多么多么NB有没有？(╰_╯)</p>
+
+<h3>后记</h3>
+
+<p>第二天在新开的terminal下，又挂了，rake不工作，提示bundle install，然后重复问题出现，当时我就崩溃了。后来找到了两个解决方案
+一个是<a href="http://stackoverflow.com/questions/12119138/failed-to-build-gem-native-extension-when-install-redcloth-4-2-9-install-linux">StackOverflow</a>上有人说看了<code>mkmf.log</code>文件（我没找到这个文件）后，得知是因为<code>gcc-4.2</code>没有安装的缘故，给出的解决方案是</p>
+
+<pre><code>$ sudo ln -s /usr/bin/gcc /usr/bin/gcc-4.2
+$ bundle install
+</code></pre>
+
+<p>我查看了下本机的<code>/usr/bin/</code>下也的确没有<code>gcc-4.2</code>，按照这种方式创建了一个<code>gcc</code>的引用，重新<code>bundle install</code>（我恨死这货了），依然是同样的问题。
+后来，我找到了<a href="http://tarashish.com/blog/2013/02/02/fixing-mkmf-load-error-ubuntu/">这个</a>，执行了这个</p>
+
+<pre><code>$ sudo apt-get install ruby1.9.1-dev
+</code></pre>
+
+<p>问题解决了</p>
 ]]></content>
   </entry>
   

@@ -79,3 +79,13 @@ rvm install 1.9.3 --with-openssl-dir=$rvm_path/usr
 
 ###结论
 至于ruby是怎么回事儿？为什么这样安装会产生这样的问题？不知道。linux小白玩linux就是太折腾。最后再吐槽一下，新换的房子网络真是垃圾到爆了，各种卡有没有？各种loading没完没了有没有？看个优酷都只能标清还得缓冲有没有？室友忽悠我搬过来的时候还各种骄傲的说网络多么多么NB有没有？(╰_╯)
+
+###后记
+第二天在新开的terminal下，又挂了，rake不工作，提示bundle install，然后重复问题出现，当时我就崩溃了。后来找到了两个解决方案
+一个是[StackOverflow](http://stackoverflow.com/questions/12119138/failed-to-build-gem-native-extension-when-install-redcloth-4-2-9-install-linux)上有人说看了`mkmf.log`文件（我没找到这个文件）后，得知是因为`gcc-4.2`没有安装的缘故，给出的解决方案是
+	$ sudo ln -s /usr/bin/gcc /usr/bin/gcc-4.2
+	$ bundle install
+我查看了下本机的`/usr/bin/`下也的确没有`gcc-4.2`，按照这种方式创建了一个`gcc`的引用，重新`bundle install`（我恨死这货了），依然是同样的问题。
+后来，我找到了[这个](http://tarashish.com/blog/2013/02/02/fixing-mkmf-load-error-ubuntu/)，执行了这个
+	$ sudo apt-get install ruby1.9.1-dev
+问题解决了
