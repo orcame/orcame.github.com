@@ -4,7 +4,7 @@
   <title><![CDATA[Category: azure | Code Infinity]]></title>
   <link href="http://www.orcame.com/blog/categories/azure/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-12-30T20:20:15+08:00</updated>
+  <updated>2013-12-30T20:22:24+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -127,8 +127,10 @@
 <p>可以通过两种方式来创建共享访问签名:</p>
 
 <ul>
-<li>独立的SAS（Ad Hoc SAS),这个没什么好说的，前面已经做了很多介绍，后面会有代码演示如何创建。</li>
-<li>引用SAP（Shared Access Policy，共享访问策略）的SAS，这里需要先介绍下什么是SAP，SAP的组成形式和SAS是一样的，不同的是SAP是定义在容器，也就是Container、Queue以及Table，级别上的，SAP需要有一个名称，也可以随时被删除（即便Expiry Time还没有到），删除即失效。</li>
+<li>独立的SAS（Ad Hoc SAS)<br/>
+这个没什么好说的，前面已经做了很多介绍，后面会有代码演示如何创建。</li>
+<li>引用SAP（Shared Access Policy，共享访问策略）的SAS<br/>
+这里需要先介绍下什么是SAP，SAP的组成形式和SAS是一样的，不同的是SAP是定义在容器，也就是Container、Queue以及Table，级别上的，SAP需要有一个名称，也可以随时被删除（即便Expiry Time还没有到），删除即失效。</li>
 </ul>
 
 
