@@ -3,7 +3,7 @@ layout: post
 title: "GitHub + Octopress 搭建个人Blog"
 date: 2013-03-02 16:25
 comments: true
-categories: Others
+categories: octopress
 keywords: octopress,blog
 description: How to create octopress blog on github
 ---

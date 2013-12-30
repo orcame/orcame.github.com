@@ -4,12 +4,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>how to edit boot menu by bcedit - Code Infinity</title>
+  <title>使用markdown问题汇总 - Code Infinity</title>
   <meta name="author" content="orcame">
 
   
-  <meta name="description" content="how to edit boot menu by bcedit">
-  <meta name="keywords" content="boot menu, bcedit">
+  <meta name="description" content="markdown question list for octopress">
+  <meta name="keywords" content="markdown issue">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -17,7 +17,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit">
+  <link rel="canonical" href="http://www.orcame.com/blog/2013/12/30/markdown-issue-list">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="Code Infinity" type="application/atom+xml">
 
@@ -118,7 +118,7 @@
   
 
 
-<time datetime="2013-10-07T19:51:00+08:00" pubdate data-updated="true">Oct 7<span>th</span>, 2013</time>
+<time datetime="2013-12-30T21:09:00+08:00" pubdate data-updated="true">Dec 30<span>th</span>, 2013</time>
         
            | <a href="#disqus_thread"
              data-disqus-identifier="http://www.orcame.com">Comments</a>
@@ -127,18 +127,172 @@
     
     
     <h1 class="entry-title">
-        How to Edit Boot Menu by Bcedit
+        使用markdown问题汇总
         
     </h1>
     
   </header>
 
 
-<div class="entry-content"><p>Copy your vm file(*.vhd for example) to a folder, D:\boot eg.</p>
+<div class="entry-content"><p>这个博客（基于<a href="https://github.com/imathis/octopress">Octopress</a>）搭建已经有一段时间了，一直没怎么写，一是因为自己很懒，二也是因为一直不知道写什么，最近强迫自己写一些东西，因为有些内容还是值得记录下来的，权当做备忘录来使用。</p>
 
-<p>Open cmd as administrator</p>
+<p>这几天用<a href="http://en.wikipedia.org/wiki/Markdown">markdown</a>的过程中碰到了一些问题的，既然我能遇到这些问题，我相信也有其他人会遇到相似的问题，这里做个简单的记录，这篇博客也会在后续的使用当中不断更新。</p>
 
-<figure class='code'><figcaption><span>command line script</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<!--more-->
+
+
+<h3>列表为何无法正确显示</h3>
+
+<p>第一个问题就是列表始终无法正确显示出来，譬如，我书写的是</p>
+
+<pre><code>1. item1
+2. item2
+3. item3
+</code></pre>
+
+<p>最后generate出来的结果却是</p>
+
+<pre><code>1. item12. item23. item3
+</code></pre>
+
+<p>无论我在每个点(.)后面预留多少个空格或者制表符，都无法得到想要的结果。无序列表也存在同样的问题。
+解决方法是需要在每个列表块之前添加一个空白行，就像这样。</p>
+
+<pre><code>&lt;!--这里放置一个空行--&gt;
+1. item1
+2. item2
+3. item3
+</code></pre>
+
+<h3>相邻两个列表块被合并了</h3>
+
+<p>问题总是一个接着一个的，当我需要书写两个相邻的列表块的时候，出来的结果总是被合并成一个，即便一个是有序列表，一个是无序列表。
+例如，我这样写</p>
+
+<pre><code>1. item1 on list1
+2. item2 on list1
+3. item3 on list1
+
++ item1 on list2
++ item2 on list2
++ item2 on list2
+</code></pre>
+
+<p>出来的结果是这样的</p>
+
+<ol>
+<li>item1 on list1</li>
+<li>item2 on list1</li>
+<li><p>item3 on list1</p></li>
+<li><p>item1 on list2</p></li>
+<li>item2 on list2</li>
+<li>item2 on list2</li>
+</ol>
+
+
+<p>这是一个很讨厌的问题，正要google的时候，突然，脑门上划过一道闪电，如果为两个列表块之间添加一个注释会怎么样？</p>
+
+<pre><code>1. item1 on list1
+2. item2 on list1
+3. item3 on list1
+&lt;!--大哥，我想要两个列表块--&gt;
++ item1 on list2
++ item2 on list2
++ item2 on list2
+</code></pre>
+
+<p>结果是，我真的得到了两个列表块.(^o^)/~</p>
+
+<ol>
+<li>item1 on list1</li>
+<li>item2 on list1</li>
+<li>item3 on list1</li>
+</ol>
+
+
+<!--大哥，我想要两个列表块-->
+
+
+<ul>
+<li>item1 on list2</li>
+<li>item2 on list2</li>
+<li>item2 on list2</li>
+</ul>
+
+
+<h3>如何在列表中显示代码块</h3>
+
+<p>如果想把代码块嵌入列表中，那么你需要在代码块前面加一个空行，这个代码块前面的缩进至少为8个空格或者两个制表符，就像这样</p>
+
+<pre><code>+ item 1
+        &lt;!--这里有个空行--&gt;
+&lt;!--这里两个制表符--&gt;code block under item1
++ item 2
+        &lt;!--这里有个空行--&gt;
+&lt;!--或者8个空格--&gt;code block under item2
+</code></pre>
+
+<p>显示的结果就是这样的</p>
+
+<ul>
+<li><p>item 1</p>
+
+<pre><code>  code block under item1
+</code></pre></li>
+<li><p>item 2</p>
+
+<pre><code>  code block under item2
+</code></pre></li>
+</ul>
+
+
+<p>如果你想要将</p>
+
+<pre><code>``` langname description 
+```
+</code></pre>
+
+<p>这种形式书写的代码块嵌入列表项中，我没有找到方法，我的判断是不可以，至少目前是这样。</p>
+
+<h3>如何显示table</h3>
+
+<p>目前为止，我还没有遇到需要写用table表达的内容的情况，这里纯粹好奇。
+table是这样写的</p>
+
+<pre><code>header1|header2|header3
+---|---|---|
+cell11|cell12|cell13
+cell21|cell22|cell23
+</code></pre>
+
+<p>出来的结果是</p>
+
+<table>
+<thead>
+<tr>
+<th>header1</th>
+<th>header2</th>
+<th>header3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cell11</td>
+<td>cell12</td>
+<td>cell13</td>
+</tr>
+<tr>
+<td>cell21</td>
+<td>cell22</td>
+<td>cell23</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>这里需要注意，这个<code>table</code>的<code>html</code>就是由纯粹的<code>&lt;table&gt;</code>,<code>&lt;thead&gt;</code>,<code>&lt;tbody&gt;</code>,<code>&lt;tr&gt;</code>,<code>&lt;td&gt;</code>等组成的，是没有诸如<code>class</code>等任何属性的，所以你看到的会是这个样子，那么如何为<code>table</code>添加<code>class</code>属性呢？我不知道，网上也有很多人再问这个问题了，现在比较通用的答案呢，都是为全局的<code>table</code>设置一个样式，譬如，加一个这样的样式表</p>
+
+<figure class='code'><figcaption><span>table style</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -146,28 +300,19 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">rem {current} is a identifier id. can also specifier the identifier id. This is used to backup the {current} setting, ignore it if you dont want. </span>
-</span><span class='line'><span class="c">rem **strongly recommend**</span>
-</span><span class='line'>bcdedit <span class="n">/copy</span> {current} <span class="n">/d</span> <span class="s2">&quot;current_backup&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">rem set the device(the vhd file)</span>
-</span><span class='line'>bcdedit <span class="n">/set</span> {current} device vhd<span class="o">=</span>[d:]\vhd path to file
-</span><span class='line'><span class="c">rem bcdedit /set {current} device vhd=[d:]\boot\xxxx.vhd for example.</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">rem set the osdevice(same path of the device)</span>
-</span><span class='line'>bcdedit <span class="n">/set</span> {current} osdevice vhd<span class="o">=</span>[d:]\vhd path to file
-</span><span class='line'>
-</span><span class='line'><span class="c">rem set the default boot item(ignore this if you dont want make the new system as the default one)</span>
-</span><span class='line'>bcdedit <span class="n">/set</span> {bootmgr} default {current} <span class="n">//guid.</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.entry-content</span> <span class="nt">table</span><span class="p">{</span>
+</span><span class='line'>  <span class="k">width</span><span class="o">:</span><span class="m">100</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">border</span><span class="o">:</span><span class="m">1px</span> <span class="k">solid</span> <span class="m">#333</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nc">.entry-content</span> <span class="nt">table</span> <span class="nt">thead</span><span class="p">{</span>
+</span><span class='line'>  <span class="c">/*thead style here*/</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c">/*other style, tbody, tr, td and so on*/</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>reboot os and enjoy the new system.</p>
+<p>这个解决方案虽然比较ugly，但的确是可以解决这个问题的，我因为偷懒，没有加这个样式。也许将来有一天我突然勤快一下，你会看到这个table变样了。
+另外，如果你想让一个单元格占据多行或者多列，（设置<code>colspan</code>或者<code>rowspan</code>),那么别想了，没有这个功能，或者你可以直接写html嵌入markdown文件。</p>
 </div>
 
 
@@ -190,12 +335,12 @@
   
 
 
-<time datetime="2013-10-07T19:51:00+08:00" pubdate data-updated="true">Oct 7<span>th</span>, 2013</time>
+<time datetime="2013-12-30T21:09:00+08:00" pubdate data-updated="true">Dec 30<span>th</span>, 2013</time>
           
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/howto/'>howto</a>
+    <a class='category' href='/blog/categories/markdown/'>markdown</a>
   
 </span>
 
@@ -204,7 +349,7 @@
         
           <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/" data-via="" data-counturl="http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.orcame.com/blog/2013/12/30/markdown-issue-list/" data-via="" data-counturl="http://www.orcame.com/blog/2013/12/30/markdown-issue-list/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -218,10 +363,8 @@
         
           <ul class="meta text-muted pager">
             
-            <li class="previous"><a class="clear-ba"  href="/blog/2013/08/11/jian-dan-de-goyu-yan/" title="Previous Post: 简单的Go语言">&laquo; 简单的Go语言</a></li>
+            <li class="previous"><a class="clear-ba"  href="/blog/2013/12/29/windows-azure-sas-introduce/" title="Previous Post: Windows Azure Shared Access Signature简介">&laquo; Windows Azure Shared Access Signature简介</a></li>
             
-            
-            <li class="next"><a class="clear-ba" href="/blog/2013/12/25/xin-huan-xi-tong-zhi-tu-cao-rubyan-zhuang/" title="Next Post: 新换系统之吐槽ruby安装">新换系统之吐槽ruby安装 &raquo;</a></li>
             
           </ul>
         
@@ -246,7 +389,7 @@
   
   <div id="recent_posts" class="list-group">
     
-    <a class="list-group-item " href="/blog/2013/12/30/markdown-issue-list/">使用markdown问题汇总</a>
+    <a class="list-group-item active" href="/blog/2013/12/30/markdown-issue-list/">使用markdown问题汇总</a>
     
     <a class="list-group-item " href="/blog/2013/12/29/windows-azure-sas-introduce/">Windows Azure Shared Access Signature简介</a>
     
@@ -436,8 +579,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/';
-        var disqus_url = 'http://www.orcame.com/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/';
+        var disqus_identifier = 'http://www.orcame.com/blog/2013/12/30/markdown-issue-list/';
+        var disqus_url = 'http://www.orcame.com/blog/2013/12/30/markdown-issue-list/';
         var disqus_script = 'embed.js';
       
     (function () {

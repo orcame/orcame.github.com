@@ -3,7 +3,7 @@ layout: post
 title: "测试代码高亮"
 date: 2013-03-04 22:47
 comments: true
-categories: Others
+categories: others
 ---
 ##Javascript
 ``` js 这是一段javascript代码
