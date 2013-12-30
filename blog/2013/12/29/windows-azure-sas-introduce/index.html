@@ -267,6 +267,152 @@
 
 <p>下面用代码片段讲解一下如何使用SAS，Window Aure提供了丰富的API来帮助我们实现该功能，这里以.Net平台，C#语言为例</p>
 
+<h4>Ad hoc SAS</h4>
+
+<p>SAS可以创建在Container上</p>
+
+<figure class='code'><figcaption><span>为Container创建SAS</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">GenerateContainerSasUri</span><span class="p">(</span><span class="kt">string</span> <span class="n">containerName</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">?</span> <span class="n">startTime</span><span class="p">,</span> <span class="n">DateTime</span> <span class="n">expiryTime</span><span class="p">,</span> <span class="n">SharedAccessBlobPermissions</span> <span class="n">permission</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">SharedAccessBlobPolicy</span> <span class="n">sasConstraints</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SharedAccessBlobPolicy</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">SharedAccessStartTime</span> <span class="p">=</span> <span class="n">startTime</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">SharedAccessExpiryTime</span> <span class="p">=</span> <span class="n">expiryTime</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">Permissions</span> <span class="p">=</span> <span class="n">permission</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CloudBlobContainer</span> <span class="n">container</span> <span class="p">=</span> <span class="n">GetContainer</span><span class="p">(</span><span class="n">containerName</span><span class="p">);</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">sas</span> <span class="p">=</span> <span class="n">container</span><span class="p">.</span><span class="n">GetSharedAccessSignature</span><span class="p">(</span><span class="n">sasConstraints</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">container</span><span class="p">.</span><span class="n">Uri</span> <span class="p">+</span> <span class="n">sas</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以创建在Blob上</p>
+
+<figure class='code'><figcaption><span>为Blob创建SAS</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">GenerateBlobSasUri</span><span class="p">(</span><span class="kt">string</span> <span class="n">containerName</span><span class="p">,</span> <span class="kt">string</span> <span class="n">blobName</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">?</span> <span class="n">startTime</span><span class="p">,</span> <span class="n">DateTime</span> <span class="n">expiryTime</span><span class="p">,</span> <span class="n">SharedAccessBlobPermissions</span> <span class="n">permission</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CloudBlobContainer</span> <span class="n">container</span> <span class="p">=</span> <span class="n">GetContainer</span><span class="p">(</span><span class="n">containerName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CloudBlockBlob</span> <span class="n">blob</span> <span class="p">=</span> <span class="n">container</span><span class="p">.</span><span class="n">GetBlockBlobReference</span><span class="p">(</span><span class="n">blobName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">SharedAccessBlobPolicy</span> <span class="n">sasConstraints</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SharedAccessBlobPolicy</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">SharedAccessStartTime</span> <span class="p">=</span> <span class="n">startTime</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">SharedAccessExpiryTime</span> <span class="p">=</span> <span class="n">expiryTime</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">Permissions</span> <span class="p">=</span> <span class="n">permission</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">sas</span> <span class="p">=</span> <span class="n">blob</span><span class="p">.</span><span class="n">GetSharedAccessSignature</span><span class="p">(</span><span class="n">sasConstraints</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">blob</span><span class="p">.</span><span class="n">Uri</span> <span class="p">+</span> <span class="n">sas</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么调用</p>
+
+<pre><code>signature = GenerateContainerSasUri(containerName,startTime, endTime, SharedAccessBlobPermissions.Read | SharedAccessBlobPermissions.Write);
+</code></pre>
+
+<p>或者调用</p>
+
+<pre><code>signature = provider.GenerateBlobSasUri(containerName, blobName, startTime, endTime, SharedAccessBlobPermissions.Read | SharedAccessBlobPermissions.Write);
+</code></pre>
+
+<p>返回的结果就是形如我们上面提到的典型SAS的一个URL</p>
+
+<pre><code>https://demostorage.blob.core.chinacloudapi.cn/normal/sasdemo.txt?sv=2013-08-15&amp;sr=b&amp;sig=JqcAqJxPDYn37QU68Xs8dBu0PsoT%2FpkkOE7ShHRstWI%3D&amp;st=2013-12-30T03%3A20%3A05Z&amp;se=2013-12-30T04%3A43%3A25Z&amp;sp=rwd
+</code></pre>
+
+<p>基于SAP的SAS的创建方法略有不同，我们需要首先创建一个SAP，注意，SAP是只能创建在容器(Container,Table,Queue)上的，并且可以随时删除。这里仍然以Container为例。</p>
+
+<figure class='code'><figcaption><span>为Container创建SAP</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//没有返回值</span>
+</span><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">SetContainerSap</span><span class="p">(</span><span class="kt">string</span> <span class="n">containerName</span><span class="p">,</span> <span class="kt">string</span> <span class="n">policyName</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">?</span> <span class="n">startTime</span><span class="p">,</span> <span class="n">DateTime</span> <span class="n">expiryTime</span><span class="p">,</span> <span class="n">SharedAccessBlobPermissions</span> <span class="n">permission</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CloudBlobContainer</span> <span class="n">container</span> <span class="p">=</span> <span class="n">GetContainer</span><span class="p">(</span><span class="n">containerName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">SharedAccessBlobPolicy</span> <span class="n">sharedPolicy</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SharedAccessBlobPolicy</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">SharedAccessStartTime</span> <span class="p">=</span> <span class="n">startTime</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">SharedAccessExpiryTime</span> <span class="p">=</span> <span class="n">expiryTime</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">Permissions</span> <span class="p">=</span> <span class="n">permission</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="n">BlobContainerPermissions</span> <span class="n">permissions</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BlobContainerPermissions</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">permissions</span><span class="p">.</span><span class="n">SharedAccessPolicies</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">permissions</span><span class="p">.</span><span class="n">SharedAccessPolicies</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">policyName</span><span class="p">,</span> <span class="n">sharedPolicy</span><span class="p">);</span><span class="c1">//SAP需要一个Name</span>
+</span><span class='line'>    <span class="n">container</span><span class="p">.</span><span class="n">SetPermissions</span><span class="p">(</span><span class="n">permissions</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>删除SAP</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">RemoveContainerSap</span><span class="p">(</span><span class="kt">string</span> <span class="n">containerName</span><span class="p">,</span> <span class="kt">string</span> <span class="n">policyName</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CloudBlobContainer</span> <span class="n">container</span> <span class="p">=</span> <span class="n">GetContainer</span><span class="p">(</span><span class="n">containerName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">BlobContainerPermissions</span> <span class="n">permissions</span> <span class="p">=</span> <span class="n">container</span><span class="p">.</span><span class="n">GetPermissions</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">permissions</span><span class="p">.</span><span class="n">SharedAccessPolicies</span><span class="p">.</span><span class="n">Remove</span><span class="p">(</span><span class="n">policyName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">container</span><span class="p">.</span><span class="n">SetPermissions</span><span class="p">(</span><span class="n">permissions</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果我们需要创建一个基于SAP的SAS就可以这样子来做</p>
+
+<figure class='code'><figcaption><span>为Blob创建基于SAP的SAS</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">GenerateBlobSasUri</span><span class="p">(</span><span class="kt">string</span> <span class="n">containerName</span><span class="p">,</span> <span class="kt">string</span> <span class="n">blobName</span><span class="p">,</span><span class="kt">string</span> <span class="n">policyName</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CloudBlobContainer</span> <span class="n">container</span> <span class="p">=</span> <span class="n">GetContainer</span><span class="p">(</span><span class="n">containerName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CloudBlockBlob</span> <span class="n">blob</span> <span class="p">=</span> <span class="n">container</span><span class="p">.</span><span class="n">GetBlockBlobReference</span><span class="p">(</span><span class="n">blobName</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">//这里我们没有传入policy参数，只是指定了一个SAP的名称(policyName),这样SAS会继承SAP的设定</span>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">sas</span> <span class="p">=</span> <span class="n">blob</span><span class="p">.</span><span class="n">GetSharedAccessSignature</span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="n">policyName</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">blob</span><span class="p">.</span><span class="n">Uri</span> <span class="p">+</span> <span class="n">sas</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为Container创建基于SAP的SAS方法是类似的，留给大家自己练习。</p>
+
 <hr />
 
 <p><strong><center>——未完待续中——</center></strong></p>

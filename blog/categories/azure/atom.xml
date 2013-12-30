@@ -4,7 +4,7 @@
   <title><![CDATA[Category: azure | Code Infinity]]></title>
   <link href="http://www.orcame.com/blog/categories/azure/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-12-30T12:06:07+08:00</updated>
+  <updated>2013-12-30T20:20:15+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -150,6 +150,111 @@
 <h3>使用</h3>
 
 <p>下面用代码片段讲解一下如何使用SAS，Window Aure提供了丰富的API来帮助我们实现该功能，这里以.Net平台，C#语言为例</p>
+
+<h4>Ad hoc SAS</h4>
+
+<p>SAS可以创建在Container上</p>
+
+<p>``` c# 为Container创建SAS
+public string GenerateContainerSasUri(string containerName, DateTime? startTime, DateTime expiryTime, SharedAccessBlobPermissions permission)
+{</p>
+
+<pre><code>SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy();
+sasConstraints.SharedAccessStartTime = startTime;
+sasConstraints.SharedAccessExpiryTime = expiryTime;
+sasConstraints.Permissions = permission;
+CloudBlobContainer container = GetContainer(containerName);
+var sas = container.GetSharedAccessSignature(sasConstraints);
+return container.Uri + sas;
+</code></pre>
+
+<p>}</p>
+
+<p><code>
+也可以创建在Blob上
+</code> c# 为Blob创建SAS
+public string GenerateBlobSasUri(string containerName, string blobName, DateTime? startTime, DateTime expiryTime, SharedAccessBlobPermissions permission)
+{</p>
+
+<pre><code>CloudBlobContainer container = GetContainer(containerName);
+CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy();
+sasConstraints.SharedAccessStartTime = startTime;
+sasConstraints.SharedAccessExpiryTime = expiryTime;
+sasConstraints.Permissions = permission;
+
+string sas = blob.GetSharedAccessSignature(sasConstraints);
+return blob.Uri + sas;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>那么调用</p>
+
+<pre><code>signature = GenerateContainerSasUri(containerName,startTime, endTime, SharedAccessBlobPermissions.Read | SharedAccessBlobPermissions.Write);
+</code></pre>
+
+<p>或者调用</p>
+
+<pre><code>signature = provider.GenerateBlobSasUri(containerName, blobName, startTime, endTime, SharedAccessBlobPermissions.Read | SharedAccessBlobPermissions.Write);
+</code></pre>
+
+<p>返回的结果就是形如我们上面提到的典型SAS的一个URL</p>
+
+<pre><code>https://demostorage.blob.core.chinacloudapi.cn/normal/sasdemo.txt?sv=2013-08-15&amp;sr=b&amp;sig=JqcAqJxPDYn37QU68Xs8dBu0PsoT%2FpkkOE7ShHRstWI%3D&amp;st=2013-12-30T03%3A20%3A05Z&amp;se=2013-12-30T04%3A43%3A25Z&amp;sp=rwd
+</code></pre>
+
+<p>基于SAP的SAS的创建方法略有不同，我们需要首先创建一个SAP，注意，SAP是只能创建在容器(Container,Table,Queue)上的，并且可以随时删除。这里仍然以Container为例。
+``` c# 为Container创建SAP
+//没有返回值
+public void SetContainerSap(string containerName, string policyName, DateTime? startTime, DateTime expiryTime, SharedAccessBlobPermissions permission)
+{</p>
+
+<pre><code>CloudBlobContainer container = GetContainer(containerName);
+SharedAccessBlobPolicy sharedPolicy = new SharedAccessBlobPolicy()
+{
+    SharedAccessStartTime = startTime,
+    SharedAccessExpiryTime = expiryTime,
+    Permissions = permission
+};
+BlobContainerPermissions permissions = new BlobContainerPermissions();
+permissions.SharedAccessPolicies.Clear();
+permissions.SharedAccessPolicies.Add(policyName, sharedPolicy);//SAP需要一个Name
+container.SetPermissions(permissions);
+</code></pre>
+
+<p>}
+<code>
+</code> c# 删除SAP
+public void RemoveContainerSap(string containerName, string policyName)
+{</p>
+
+<pre><code>CloudBlobContainer container = GetContainer(containerName);
+BlobContainerPermissions permissions = container.GetPermissions();
+permissions.SharedAccessPolicies.Remove(policyName);
+container.SetPermissions(permissions);
+</code></pre>
+
+<p>}</p>
+
+<p>```
+如果我们需要创建一个基于SAP的SAS就可以这样子来做</p>
+
+<p>``` c# 为Blob创建基于SAP的SAS
+public string GenerateBlobSasUri(string containerName, string blobName,string policyName)
+{</p>
+
+<pre><code>CloudBlobContainer container = GetContainer(containerName);
+CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+//这里我们没有传入policy参数，只是指定了一个SAP的名称(policyName),这样SAS会继承SAP的设定
+string sas = blob.GetSharedAccessSignature(null,policyName);
+return blob.Uri + sas;
+</code></pre>
+
+<p>}
+```
+为Container创建基于SAP的SAS方法是类似的，留给大家自己练习。</p>
 
 <hr />
 
