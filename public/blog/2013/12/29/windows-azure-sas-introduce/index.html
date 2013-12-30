@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Windows Azure Shared Access Signature简介 - Code Infinity</title>
+  <meta name="author" content="orcame">
+
+  
+  <meta name="description" content="Windows Azure Shared Access Signature Introduce">
+  <meta name="keywords" content="azure, sas, shared access signature">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.orcame.com/blog/2013/12/29/windows-azure-sas-introduce">
+  <link href="/favicon.png" type="image/png" rel="icon">
+  <link href="/atom.xml" rel="alternate" title="Code Infinity" type="application/atom+xml">
+
+  <link href="/javascripts/libs/bootstrap-3.0.0/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<!-- <link href="/javascripts/libs/bootstrap-3.0.0/dist/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"> -->
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+
+  <script src="/javascripts/libs/jquery/jquery-2.0.3.min.js"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-44585503-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+  <body   >
+    <div id="wrap">
+      <header role="banner">
+        <hgroup class="raw">
+	<div class="container">
+	  <h1><a href="/" title="code is the constructor of the whole world."><span>Code</span><div class="infinity"><em>INFINITY</em></div></a></h1>
+	  
+	    <h2>Orcame's program world</h2>
+	  
+  	</div>
+</hgroup>
+        <nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Code Infinity</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="/">Blog</a>
+                </li>
+                <li >
+                    <a href="/blog/archives">Archives</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="subscribe-rss" href="/atom.xml" title="subscribe via RSS">
+                        <span class="visible-xs">RSS</span>
+                        <img class="hidden-xs" src="/images/rss.png" alt="RSS">
+                    </a>
+                </li>
+                
+            </ul>
+            
+                <form class="search navbar-form navbar-right" action="http://google.com/search" method="GET">
+                    <input type="hidden" name="q" value="site:www.orcame.com">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="q" placeholder="Search">
+                    </div>
+                </form>
+            
+        </div>
+    </div>
+</nav>
+
+
+      </header>
+      <div id="main" class="container">
+        <div id="content">
+          <div class="row">
+  <div class="page-content col-md-9">
+    <article class="hentry" role="article">
+      
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-29T22:26:00+08:00" pubdate data-updated="true">Dec 29<span>th</span>, 2013</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.orcame.com">Comments</a>
+        
+      </p>
+    
+    
+    <h1 class="entry-title">
+        Windows Azure Shared Access Signature简介
+        
+    </h1>
+    
+  </header>
+
+
+<div class="entry-content"><h2>What</h2>
+
+<p>Shared Access Signature(SAS),共享访问签名，是用于提供对Windows Azure Storage中的Container，Blob，Table以及Queue在特定时间范围内进行有限权限访问的URL。</p>
+
+<!--more-->
+
+
+<h2>Why</h2>
+
+<p>通常情况下，对Azure Storage的访问是通过账户名和密钥来实现的，这样的认证方式赋予了使用者包括增删改在内的最大的访问权限，而实际应用当中，有许多场景是希望能够限定用户的权限的，比方常见的只读权限，并且也不希望将密钥泄露给用户，这样存在很大的安全隐患。使用SAS可以很好的解决这个问题。</p>
+
+<h2>How</h2>
+
+<h3>功能介绍</h3>
+
+<p>SAS提供的功能包括</p>
+
+<h5>For Blob</h5>
+
+<ul>
+<li>读写Blob及其属性和元数据</li>
+<li>删除、租赁和创建 Blob 快照</li>
+<li>读取Container的Blob列表</li>
+</ul>
+
+
+<h5>For Table</h5>
+
+<ul>
+<li>增、删、改、查(version>=&#8217;2012-02-12&#8217;可用)</li>
+</ul>
+
+
+<h5>For Queue</h5>
+
+<ul>
+<li>增删改队列消息(version>=&#8217;2012-02-12&#8217;可用)</li>
+<li>读取队列元数据，消息计数(version>=&#8217;2012-02-12&#8217;可用)</li>
+</ul>
+
+
+<h3>表现形式</h3>
+
+<p>一个典型的SAS(以Blob为例)为如下形式</p>
+
+<pre><code>https://demostorage.blob.core.chinacloudapi.cn/normal/sasdemo.txt?sv=2013-08-15&amp;sr=b&amp;sig=JqcAqJxPDYn37QU68Xs8dBu0PsoT%2FpkkOE7ShHRstWI%3D&amp;st=2013-12-30T03%3A20%3A05Z&amp;se=2013-12-30T04%3A43%3A25Z&amp;sp=rwd
+</code></pre>
+
+<p>由以下几部分组成</p>
+
+<ol>
+<li><p>Blob URL</p>
+
+<pre><code> https://demostorage.blob.core.chinacloudapi.cn/normal/sasdemo.txt
+</code></pre>
+
+<p>Blob文件的网络路径</p></li>
+<li><p>Storage Service Version</p>
+
+<pre><code> sv=2013-08-15
+</code></pre>
+
+<p>这是在2012-02-12版本后新加的一个参数，用来标识Storage Service所使用的版本</p></li>
+<li><p>Start Time</p>
+
+<pre><code> st=2013-12-30T03%3A20%3A05Z
+</code></pre>
+
+采用<a href="http://www.google.com.hk/#newwindow=1&amp;q=ISO+8061&amp;safe=strict">ISO8061</a>格式表示的日期，用来标识该SAS生效的起始时间，可以省略（注意，不是为空，表示立即生效)。
+官方文档上说采用的是<a href="http://www.google.com.hk/#newwindow=1&amp;q=ISO+8061&amp;safe=strict">ISO8061</a>格式，我查了半天没找到<a href="http://www.google.com.hk/#newwindow=1&amp;q=ISO+8061&amp;safe=strict">ISO8061</a>,只有<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601</a>，API产生的字符串是符合<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601</a>的规范的，这里很有可能是<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601</a>才对。
+附上<a href="http://www.windowsazure.com/en-us/manage/services/storage/net/shared-access-signature-part-1/">官方文档</a>原文
+
+<blockquote><p>Specified in an ISO 8061 format. If you want the SAS to be valid immediately, omit the start time.</p></blockquote></li>
+<li><p>Expiry Time</p>
+
+<pre><code> se=2013-12-30T04%3A43%3A25Z
+</code></pre>
+
+<p>采用<a href="http://www.google.com.hk/#newwindow=1&amp;q=ISO+8061&amp;safe=strict">ISO8061</a>格式(疑问同上)表示的日期，用来标识该SAS失效时间，这个参数是必须的
+注意，在2012-02-12以前的版本中，SAS默认的有效时长最长1小时，也就是说即便你设定的st和se之间的差值为大于一小时的任何时长，该SAS还是会在1小时后自动失效</p></li>
+<li><p>Resource</p>
+
+<pre><code> sr=b
+</code></pre>
+
+<p>表明该资源是一个Blob</p></li>
+<li><p>Permissions</p>
+
+<pre><code> sp=rwd
+</code></pre>
+
+<p>该SAS链接拥有的权限，这里是读、写和删除。</p></li>
+<li><p>Signature</p>
+
+<pre><code> sig=JqcAqJxPDYn37QU68Xs8dBu0PsoT%2FpkkOE7ShHRstWI%3D
+</code></pre>
+
+<p>用于验证对Blob访问的签名</p></li>
+</ol>
+
+
+<!--stop list-->
+
+
+<h3>SAS与SAP</h3>
+
+<p>可以通过两种方式来创建共享访问签名:</p>
+
+<ul>
+<li>独立的SAS（Ad Hoc SAS)<br/>
+这个没什么好说的，前面已经做了很多介绍，后面会有代码演示如何创建。</li>
+<li>引用SAP（Shared Access Policy，共享访问策略）的SAS<br/>
+这里需要先介绍下什么是SAP，SAP的组成形式和SAS是一样的，不同的是SAP是定义在容器，也就是Container、Queue以及Table，级别上的，SAP需要有一个名称，也可以随时被删除（即便Expiry Time还没有到），删除即失效。</li>
+</ul>
+
+
+<h3>失效</h3>
+
+<p>使用SAS的一个关键问题就是何时失效，上面已经有了这方面的介绍，这里做个小结</p>
+
+<ul>
+<li>SAS指定的失效时间到了</li>
+<li>SAS引用的SAP的失效时间到了<br/>
+有两种情况可以导致SAP失效时间到，一是SAP指定的失效时间过了，二是管理员更改了SAP的设定，使其失效时间指向了一个已经过去的时间（这是回收SAP的一种方式）。</li>
+<li>SAS引用的SAP被删除了<br/>
+这是回收SAP的另外一种方式，<strong>如果你删掉了一个未过期的SAP，之后又创建了另一个同名的有效（未过期）SAP，那么所有引用了该SAP的SAS会继续生效</strong>（注意，此时原继承的过期时间仍然未到），所以为避免发生未预期的错误，需要注意用不同的名字创建SAP</li>
+<li>创建SAS的账号密钥被重置<br/>
+这种情况下，所有使用该密钥创建的SAP，SAS都会失效。<strong>慎用</strong></li>
+</ul>
+
+
+<h3>使用</h3>
+
+<p>下面用代码片段讲解一下如何使用SAS，Window Aure提供了丰富的API来帮助我们实现该功能，这里以.Net平台，C#语言为例</p>
+
+<h4>Ad hoc SAS</h4>
+
+<p>SAS可以创建在Container上</p>
+
+<figure class='code'><figcaption><span>为Container创建SAS</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">GenerateContainerSasUri</span><span class="p">(</span><span class="kt">string</span> <span class="n">containerName</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">?</span> <span class="n">startTime</span><span class="p">,</span> <span class="n">DateTime</span> <span class="n">expiryTime</span><span class="p">,</span> <span class="n">SharedAccessBlobPermissions</span> <span class="n">permission</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">SharedAccessBlobPolicy</span> <span class="n">sasConstraints</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SharedAccessBlobPolicy</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">SharedAccessStartTime</span> <span class="p">=</span> <span class="n">startTime</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">SharedAccessExpiryTime</span> <span class="p">=</span> <span class="n">expiryTime</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">Permissions</span> <span class="p">=</span> <span class="n">permission</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CloudBlobContainer</span> <span class="n">container</span> <span class="p">=</span> <span class="n">GetContainer</span><span class="p">(</span><span class="n">containerName</span><span class="p">);</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">sas</span> <span class="p">=</span> <span class="n">container</span><span class="p">.</span><span class="n">GetSharedAccessSignature</span><span class="p">(</span><span class="n">sasConstraints</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">container</span><span class="p">.</span><span class="n">Uri</span> <span class="p">+</span> <span class="n">sas</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以创建在Blob上</p>
+
+<figure class='code'><figcaption><span>为Blob创建SAS</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">GenerateBlobSasUri</span><span class="p">(</span><span class="kt">string</span> <span class="n">containerName</span><span class="p">,</span> <span class="kt">string</span> <span class="n">blobName</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">?</span> <span class="n">startTime</span><span class="p">,</span> <span class="n">DateTime</span> <span class="n">expiryTime</span><span class="p">,</span> <span class="n">SharedAccessBlobPermissions</span> <span class="n">permission</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CloudBlobContainer</span> <span class="n">container</span> <span class="p">=</span> <span class="n">GetContainer</span><span class="p">(</span><span class="n">containerName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CloudBlockBlob</span> <span class="n">blob</span> <span class="p">=</span> <span class="n">container</span><span class="p">.</span><span class="n">GetBlockBlobReference</span><span class="p">(</span><span class="n">blobName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">SharedAccessBlobPolicy</span> <span class="n">sasConstraints</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SharedAccessBlobPolicy</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">SharedAccessStartTime</span> <span class="p">=</span> <span class="n">startTime</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">SharedAccessExpiryTime</span> <span class="p">=</span> <span class="n">expiryTime</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">sasConstraints</span><span class="p">.</span><span class="n">Permissions</span> <span class="p">=</span> <span class="n">permission</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">sas</span> <span class="p">=</span> <span class="n">blob</span><span class="p">.</span><span class="n">GetSharedAccessSignature</span><span class="p">(</span><span class="n">sasConstraints</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">blob</span><span class="p">.</span><span class="n">Uri</span> <span class="p">+</span> <span class="n">sas</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么调用</p>
+
+<pre><code>signature = GenerateContainerSasUri(containerName,startTime, endTime, SharedAccessBlobPermissions.Read | SharedAccessBlobPermissions.Write);
+</code></pre>
+
+<p>或者调用</p>
+
+<pre><code>signature = provider.GenerateBlobSasUri(containerName, blobName, startTime, endTime, SharedAccessBlobPermissions.Read | SharedAccessBlobPermissions.Write);
+</code></pre>
+
+<p>返回的结果就是形如我们上面提到的典型SAS的一个URL</p>
+
+<pre><code>https://demostorage.blob.core.chinacloudapi.cn/normal/sasdemo.txt?sv=2013-08-15&amp;sr=b&amp;sig=JqcAqJxPDYn37QU68Xs8dBu0PsoT%2FpkkOE7ShHRstWI%3D&amp;st=2013-12-30T03%3A20%3A05Z&amp;se=2013-12-30T04%3A43%3A25Z&amp;sp=rwd
+</code></pre>
+
+<p>基于SAP的SAS的创建方法略有不同，我们需要首先创建一个SAP，注意，SAP是只能创建在容器(Container,Table,Queue)上的，并且可以随时删除。这里仍然以Container为例。</p>
+
+<figure class='code'><figcaption><span>为Container创建SAP</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//没有返回值</span>
+</span><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">SetContainerSap</span><span class="p">(</span><span class="kt">string</span> <span class="n">containerName</span><span class="p">,</span> <span class="kt">string</span> <span class="n">policyName</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">?</span> <span class="n">startTime</span><span class="p">,</span> <span class="n">DateTime</span> <span class="n">expiryTime</span><span class="p">,</span> <span class="n">SharedAccessBlobPermissions</span> <span class="n">permission</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CloudBlobContainer</span> <span class="n">container</span> <span class="p">=</span> <span class="n">GetContainer</span><span class="p">(</span><span class="n">containerName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">SharedAccessBlobPolicy</span> <span class="n">sharedPolicy</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SharedAccessBlobPolicy</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">SharedAccessStartTime</span> <span class="p">=</span> <span class="n">startTime</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">SharedAccessExpiryTime</span> <span class="p">=</span> <span class="n">expiryTime</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">Permissions</span> <span class="p">=</span> <span class="n">permission</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="n">BlobContainerPermissions</span> <span class="n">permissions</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BlobContainerPermissions</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">permissions</span><span class="p">.</span><span class="n">SharedAccessPolicies</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">permissions</span><span class="p">.</span><span class="n">SharedAccessPolicies</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">policyName</span><span class="p">,</span> <span class="n">sharedPolicy</span><span class="p">);</span><span class="c1">//SAP需要一个Name</span>
+</span><span class='line'>    <span class="n">container</span><span class="p">.</span><span class="n">SetPermissions</span><span class="p">(</span><span class="n">permissions</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>删除SAP</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">RemoveContainerSap</span><span class="p">(</span><span class="kt">string</span> <span class="n">containerName</span><span class="p">,</span> <span class="kt">string</span> <span class="n">policyName</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CloudBlobContainer</span> <span class="n">container</span> <span class="p">=</span> <span class="n">GetContainer</span><span class="p">(</span><span class="n">containerName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">BlobContainerPermissions</span> <span class="n">permissions</span> <span class="p">=</span> <span class="n">container</span><span class="p">.</span><span class="n">GetPermissions</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">permissions</span><span class="p">.</span><span class="n">SharedAccessPolicies</span><span class="p">.</span><span class="n">Remove</span><span class="p">(</span><span class="n">policyName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">container</span><span class="p">.</span><span class="n">SetPermissions</span><span class="p">(</span><span class="n">permissions</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果我们需要创建一个基于SAP的SAS就可以这样子来做</p>
+
+<figure class='code'><figcaption><span>为Blob创建基于SAP的SAS</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">GenerateBlobSasUri</span><span class="p">(</span><span class="kt">string</span> <span class="n">containerName</span><span class="p">,</span> <span class="kt">string</span> <span class="n">blobName</span><span class="p">,</span><span class="kt">string</span> <span class="n">policyName</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CloudBlobContainer</span> <span class="n">container</span> <span class="p">=</span> <span class="n">GetContainer</span><span class="p">(</span><span class="n">containerName</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CloudBlockBlob</span> <span class="n">blob</span> <span class="p">=</span> <span class="n">container</span><span class="p">.</span><span class="n">GetBlockBlobReference</span><span class="p">(</span><span class="n">blobName</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">//这里我们没有传入policy参数，只是指定了一个SAP的名称(policyName),这样SAS会继承SAP的设定</span>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">sas</span> <span class="p">=</span> <span class="n">blob</span><span class="p">.</span><span class="n">GetSharedAccessSignature</span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="n">policyName</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">blob</span><span class="p">.</span><span class="n">Uri</span> <span class="p">+</span> <span class="n">sas</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为Container创建基于SAP的SAS方法是类似的，留给大家自己练习。</p>
+
+<hr />
+
+<p><strong><center>——未完待续中——</center></strong></p>
+</div>
+
+
+      <footer>
+        <p class="meta text-muted">
+          
+  
+
+<span class="byline author vcard">Posted by <span class="fn">orcame</span></span>
+
+          
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-29T22:26:00+08:00" pubdate data-updated="true">Dec 29<span>th</span>, 2013</time>
+          
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/azure/'>azure</a>
+  
+</span>
+
+
+        </p>
+        
+          <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.orcame.com/blog/2013/12/29/windows-azure-sas-introduce/" data-via="" data-counturl="http://www.orcame.com/blog/2013/12/29/windows-azure-sas-introduce/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+        
+        
+          <ul class="meta text-muted pager">
+            
+            <li class="previous"><a class="clear-ba"  href="/blog/2013/12/26/octopress-multi-compoter/" title="Previous Post: 如何在多台电脑上使用Octopress写博客">&laquo; 如何在多台电脑上使用Octopress写博客</a></li>
+            
+            
+          </ul>
+        
+      </footer>
+    </article>
+    
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+      </section>
+    
+  </div>
+
+  
+  <aside class="sidebar col-md-3">
+    
+      <section class="panel panel-default no-border-radius">
+  <div class="panel-heading">
+    <h3 class="panel-title">Recent Posts</h3>
+  </div>
+  
+  <div id="recent_posts" class="list-group">
+    
+    <a class="list-group-item active" href="/blog/2013/12/29/windows-azure-sas-introduce/">Windows Azure Shared Access Signature简介</a>
+    
+    <a class="list-group-item " href="/blog/2013/12/26/octopress-multi-compoter/">如何在多台电脑上使用Octopress写博客</a>
+    
+    <a class="list-group-item " href="/blog/2013/12/26/git-memo/">Git备忘录</a>
+    
+    <a class="list-group-item " href="/blog/2013/12/25/xin-huan-xi-tong-zhi-tu-cao-rubyan-zhuang/">新换系统之吐槽ruby安装</a>
+    
+    <a class="list-group-item " href="/blog/2013/10/07/how-to-edit-boot-menu-by-bcedit/">How to Edit Boot Menu by Bcedit</a>
+    
+  </div>
+</section>
+
+<section>
+  <h1>About Me</h1>
+  <p>code is the constructor of the whole world.</p>
+</section>
+
+<section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/others/'>Others (3)</a></li>
+<li class='category'><a href='/blog/categories/azure/'>azure (1)</a></li>
+<li class='category'><a href='/blog/categories/git/'>git (1)</a></li>
+<li class='category'><a href='/blog/categories/golang/'>golang (1)</a></li>
+<li class='category'><a href='/blog/categories/howto/'>howto (2)</a></li>
+<li class='category'><a href='/blog/categories/linux/'>linux (1)</a></li>
+
+  </ul>
+</section>
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+      <h3 class="panel-title">External Links</h3>
+  </div>
+  <div class="list-group" id="el_repos">
+  </div>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        var links=[
+          {
+            'name':'Windows Azure Training Kit',
+            'description':'hands-on labs, presentations, and samples',
+            'url':'http://azuretk.com'
+          },
+          {
+            'name':'Blair CHEN',
+            'description':'blchen的工作总结和日常开发笔记',
+            'url':'http://blchen.com'
+          },
+          {
+            'name':'LeiZhang Azure Articles',
+            'description':'张磊(Azure MVP)的Azure系列文章',
+            'url':'http://www.cnblogs.com/threestone/archive/2012/01/06/2382322.html'
+          },
+          {
+            'name':'Azure Speed Test',
+            'description':'Azure Storage测速网站',
+            'url':'http://www.azurespeed.com/'
+          }
+        ]
+        var t=$('#el_repos'), item=$('<div class="list-group-item"/>');
+        $.each(links,function(){
+          var h=$('<h4 class="list-group-item-heading">')
+            .append('<a target="_blank" href="'+this.url+'">'+this.name+'</a>');
+          var p=$('<p class="text-muted"/>').text(this.description);
+          item.append(h,p);
+        })
+        t.append(item);
+    });
+  </script>
+</section>
+
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+      <h3 class="panel-title">GitHub Repos</h3>
+  </div>
+  <div class="list-group" id="gh_repos">
+    <p class="loading">Status updating...</p>
+  </div>
+  
+    <div class="gh-profile-link pull-right text-muted">
+      <a target="_blank" href="https://github.com/orcame">@orcame</a> on GitHub
+    </div>
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'orcame',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+        <h3 class="panel-title">Coderwall</h3>
+  </div>
+  <div class="list-group" id="cw_repos">
+    <p class="loading">Status updating...</p>
+  </div>
+  
+    <div class="gh-profile-link pull-right text-muted">
+      <a target="_blank" href="https://coderwall.com/orcame">@orcame</a> on CoderWall
+    </div>
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        coderwall.showRepos({
+            user: 'orcame',
+            target: '#cw_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/coderwall.js" type="text/javascript"> </script>
+  <style type="text/css">
+  #cw_repos img{
+      margin-top:15px;
+      margin-bottom:15px;
+  }
+  </style>
+</section>
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+      <h3 class="panel-title">Sina Weibo</h3>
+  </div>
+  <div id="weibo_repos">
+  	<iframe width="100%" height="350" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=zh_cn&amp;width=0&amp;height=350&amp;ptype=1&amp;speed=&amp;skin=1&amp;isTitle=0&amp;noborder=0&amp;isWeibo=0&amp;uid=3835412420&amp;verifier=61ac6817&amp;dpc=1"></iframe>
+  </div>
+</section>
+
+
+
+
+
+
+
+    
+  </aside>
+  
+</div>
+
+        </div>
+      </div>
+    </div>
+    <footer role="contentinfo"><div class="container">
+    <p class="text-muted credits">
+  Copyright &copy; 2013 - orcame<br>
+  <small>
+      <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>,
+      <span class="credit">customized with <a href="https://github.com/kAworu/octostrap3">octostrap3</a></span>.
+  </small>
+</p>
+
+</div>
+</footer>
+    <script src="/javascripts/libs/bootstrap-3.0.0/dist/js/bootstrap.min.js"></script>
+<script src="/javascripts/modernizr-2.0.js"></script>
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'orcame';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.orcame.com/blog/2013/12/29/windows-azure-sas-introduce/';
+        var disqus_url = 'http://www.orcame.com/blog/2013/12/29/windows-azure-sas-introduce/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+  </body>
+</html>
