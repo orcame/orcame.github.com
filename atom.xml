@@ -4,7 +4,7 @@
   <title><![CDATA[Code Infinity]]></title>
   <link href="http://www.orcame.com/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2014-01-03T15:12:02+08:00</updated>
+  <updated>2014-01-03T16:22:40+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -18,7 +18,7 @@
     <link href="http://www.orcame.com/blog/2014/01/02/upload-azure-blob-by-javascript/"/>
     <updated>2014-01-02T19:32:00+08:00</updated>
     <id>http://www.orcame.com/blog/2014/01/02/upload-azure-blob-by-javascript</id>
-    <content type="html"><![CDATA[<p>Azure的存储服务目前开通了跨域访问<a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a>请求功能，有了这个功能，我们就可以将被本地文件通过javascript上传到azure的存储服务器上了，而这个过程不需要任何服务器端代码就可以完成。废话少说!下面来看看怎么实现这个功能。</p>
+    <content type="html"><![CDATA[<p>Azure的存储服务目前开通了跨域访问<a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a>请求功能，有了这个功能，我们就可以将被本地文件通过javascript上传到azure的存储服务器上了，而这个过程不需要任何服务器端代码就可以完成。你可以到这里看一下<a href="http://www.orcame.com/jquery-blobuploader/">演示效果</a>!下面来看看怎么实现这个功能。</p>
 
 <!--more-->
 
