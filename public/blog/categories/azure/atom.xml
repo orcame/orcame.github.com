@@ -4,7 +4,7 @@
   <title><![CDATA[Category: azure | Code Infinity]]></title>
   <link href="http://www.orcame.com/blog/categories/azure/atom.xml" rel="self"/>
   <link href="http://www.orcame.com/"/>
-  <updated>2013-12-30T22:27:16+08:00</updated>
+  <updated>2014-01-03T16:22:40+08:00</updated>
   <id>http://www.orcame.com/</id>
   <author>
     <name><![CDATA[orcame]]></name>
@@ -12,6 +12,484 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[通过Javascript上传文件到Azure存储服务器]]></title>
+    <link href="http://www.orcame.com/blog/2014/01/02/upload-azure-blob-by-javascript/"/>
+    <updated>2014-01-02T19:32:00+08:00</updated>
+    <id>http://www.orcame.com/blog/2014/01/02/upload-azure-blob-by-javascript</id>
+    <content type="html"><![CDATA[<p>Azure的存储服务目前开通了跨域访问<a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a>请求功能，有了这个功能，我们就可以将被本地文件通过javascript上传到azure的存储服务器上了，而这个过程不需要任何服务器端代码就可以完成。你可以到这里看一下<a href="http://www.orcame.com/jquery-blobuploader/">演示效果</a>!下面来看看怎么实现这个功能。</p>
+
+<!--more-->
+
+
+<h2>准备工具</h2>
+
+<ul>
+<li>支持HTML5的浏览器一枚</li>
+<li>文本编辑器一个</li>
+<li>javascript打字员一名</li>
+<li>测试上传用文件若干</li>
+</ul>
+
+
+<h2>准备条件</h2>
+
+<h3>存储服务器</h3>
+
+<p>经过一段时间的试用和测试，Windows Azure Storage的性能和稳定性都是非常高的，访问速度很快，这个我们可以用本次实验的结果给出证明。我选用了Azure中国(MoonCake)的存储服务，数据中心在上海。想要实现通过JS在浏览器端将文件提交到Azure Storage，需要满足以下两个条件。</p>
+
+<ol>
+<li>取得Azure Storage的访问权限
+ 有关这个问题，我前一篇博客已经对SAS做了比较详细的介绍，<a href="http://www.orcame.com/blog/2013/12/29/windows-azure-sas-introduce/">传送门</a>。我们这里采用在Container级别上设置SAS的方式取得对Azure Storage的访问权限</li>
+<li>将Azure Storage Account设置为允许跨域请求<br/>
+ Azure Storage已经开通了跨域请求功能，详细信息请移步<a href="http://blogs.msdn.com/b/windowsazurestorage/archive/2013/11/27/windows-azure-storage-release-introducing-cors-json-minute-metrics-and-more.aspx">这里</a>，默认是关闭的，要想使用这个功能，我们需要对存储账户做一些设置。不幸的是Azure Portal上找不到设置入口，你只能通过API来实现。截止目前(01/03/2014)，MoonCake平台依然不能运行Azure SDK 2.2以上版本(如果你胆敢发布一个基于SDK2.2的Cloud Service，那么MoonCake很生气，后果很严重——不但你的Cloud Service发布失败，而且你的整个Subscription的Portal页面也全挂了)，但亲测在本地运行Azure Storage SDK3.0是可以成功开启MoonCake上Storage的CORS功能的。</li>
+</ol>
+
+
+<p>附上开启CORS功能的API:
+```c# 为Azure Storage Account开启CORS功能
+public void OpenCors()
+{</p>
+
+<pre><code>CloudStorageAccount account = CloudStorageAccount.Parse(connectionString);
+CloudBlobClient client = account.CreateCloudBlobClient();
+ServiceProperties propers = client.GetServiceProperties();
+CorsRule cr = new CorsRule();
+cr.AllowedMethods = CorsHttpMethods.Put | CorsHttpMethods.Options | CorsHttpMethods.Post | CorsHttpMethods.Delete | CorsHttpMethods.Get;
+cr.AllowedOrigins.Add("[your domain]");//http://www.orcame.com for example
+cr.AllowedHeaders.Add("*");
+cr.MaxAgeInSeconds = 200;
+propers.Cors = new CorsProperties();
+propers.Cors.CorsRules.Add(cr);
+client.SetServiceProperties(propers);
+</code></pre>
+
+<p>}
+```</p>
+
+<h3>浏览器</h3>
+
+<p>用javascript上传文件我们必须能够取得对本地文件的读取操作，在HTML5之前这是不被允许的，
+现代浏览器为我们提供了一个崭新的javascript API，FileReader，这使得我们可以异步的读取本地文件，甚至可以将文件拆分。有关FileReader的用法，我们在接下来的代码环节进行展开。</p>
+
+<h2>功能列表</h2>
+
+<p>本次实验我们要实现的功能如下</p>
+
+<ol>
+<li>文件上传</li>
+<li>并发控制</li>
+<li>断点续传</li>
+</ol>
+
+
+<h2>实验步骤</h2>
+
+<h3>文件上传</h3>
+
+<p>根据前面的分析，想要实现一个文件上传功能，需要用到FileReader对本地文件进行读取，然后通过ajax来发起上传请求到Azure Storage服务器</p>
+
+<p>对于File,FileReader类，这里不做更详细的介绍，仅仅说明一下这里需要用到的方法和事件。</p>
+
+<ul>
+<li>File.slice(start,end)
+  有关slice方法的详细介绍请参考<a href="http://www.w3.org/TR/FileAPI/#slice-method-algo">这里</a>,简单来讲，就是这个方法可以根据传入的start和end将一个文件拆分成一个块（在js中叫blob，在azure中叫block，而在azure中js中的file叫blob，我勒个去，好绕），假设我们有一个<code>&lt;input type='file'/&gt;</code>控件，那么当我们选定了一个文件之后，是可以通过<code>files[0]</code>取得当前文件的实例的。</li>
+<li>FileReader.readAsArrayBuffer(blob)
+  惯例，官方文档在<a href="http://www.w3.org/TR/FileAPI/#readAsArrayBuffer">这里</a>,这个方法可以将一个blob(azure中的block)读入到FileReader实例中</li>
+<li>FileReader.onloadend(ev)
+  <a href="http://www.w3.org/TR/FileAPI/#event-handler-attributes-section">传送门</a>,简单来讲这是一个事件，当上面的readAsArrayBuffer执行结束后会触发这个事件。</li>
+</ul>
+
+
+<p>关于ajax请求如何发送，这里不赘述，请参考jquery<a href="http://api.jquery.com/jquery.ajax/">文档</a></p>
+
+<p>在正式开始之前，我们得先明确几个概念</p>
+
+<ul>
+<li>File(JS):指代本地一个文件</li>
+<li>Blob(JS):指代本地文件被拆分出的一块，相当于Azure中的Block</li>
+<li>Blob(Azure):一个文件，可以由无数个Block组成</li>
+<li>Block:无数个Block组成一个Blob</li>
+</ul>
+
+
+<p>为简单起见，本文以下内容，对于文件统称blob，块统称block</p>
+
+<p>说了好多废话，现在开席，上菜了。</p>
+
+<p>有了上面的介绍，一个内容上传的功能就很容易实现了，且看代码</p>
+
+<p>```js 上传block代码
+var sendBlock = function (block, beforeSend, progress, success, error) {</p>
+
+<pre><code>$.ajax({
+    url: block.url,
+    type: "PUT",
+    data: block.data,
+    processData: false,
+    xhr: function () { 
+        var _xhr = $.ajaxSettings.xhr();
+        if (_xhr.upload) { 
+            _xhr.upload.addEventListener('progress', function (ev) {
+                //这里为了获取上传进度，我们添加了progress事件，在事件中可以做一些UI上的进度显示功能
+                if (ev.lengthComputable) {
+                    if (progress) {
+                        progress.call(block,ev.loaded,ev.total)
+                    }
+                }
+            }, false);
+        }
+        return _xhr;
+    },
+    beforeSend: function (xhr) {
+        block.status='uploading';
+        xhr.setRequestHeader('x-ms-blob-type', 'BlockBlob');
+        if (beforeSend) {
+            //在上传开始之前，你可以通过这个事件做一些小动作
+            beforeSend(xhr);
+        }
+    },
+    success: function (data, sta) {
+        block.status='success';
+        if (success) {
+            //上传成功后，用这个方法通知UI
+            success.call(block,data, status);
+        }
+    },
+    error: function (xhr, desc, err) {
+        block.status='error';
+        if (error) {
+            //同理，失败了用这个方法通知UI
+            error.call(block, xhr, desc, err);
+        }
+    }
+});
+</code></pre>
+
+<p>};
+```
+上面就是一个最基本的block上传功能，如果要实现一个blob的上传,我们还需要做进一步的改进。首先就需要对blob进行拆分，因为azure的storage对block的大小有个限制，最大不能超过4M，所以我们的拆分上限就是4M。
+有了上面的代码片段，实现一个blob的上传就很容易了，我们可以传入success方法，在前一个block上传成功了之后继续上传下一个block，直到所有block全部上传完毕。下面仅仅给出逻辑实现：</p>
+
+<p>```js 上传一个blob</p>
+
+<p>var _blob;
+function success=(){</p>
+
+<pre><code>var block =this.blob.nextBlock();
+if(block){
+    //在这里，我们做一个递归调用，一旦block上传完毕，就继续上传下一个block，直到所有block都完成为止。
+    sendBlock(block,null,null,success,error);
+}else{
+    //所有Block都上传完成了，这里需要做一个commit动作，就是通知azure storage，我刚刚上传的那些block是属于同一个blob的，请合并。
+    commitBlob(this.blob);
+}
+</code></pre>
+
+<p>}</p>
+
+<p>function error(){</p>
+
+<pre><code>//预留占位  
+</code></pre>
+
+<p>}</p>
+
+<p>function commitBlob(blob,success,error){</p>
+
+<pre><code>var uri = blob.url + '&amp;comp=blocklist'
+    , data = []
+    , len = blob.blocks.length;
+//blob的commit需要提供一个blockid列表，这个列表中的所有项的长度必须一致，并且顺序不能错乱
+data.push('&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;BlockList&gt;');
+for (var i = 0; i &lt; len; i++) {
+    data.push('&lt;Latest&gt;' + blob.blocks[i].id + '&lt;/Latest&gt;');
+}
+data.push('&lt;/BlockList&gt;');
+$.ajax({
+    url: uri,
+    type: "PUT",
+    data: data.join(''),
+    beforeSend: function (xhr) {
+        xhr.setRequestHeader('x-ms-blob-content-type', blob.type);
+    },
+    success: function (data, sta) {
+        if (success) {
+            success(data, sta);
+        }
+    },
+    error: function (xhr, desc, err) {
+        if (error) {
+            error(xhr, desc, err);
+        }
+    }
+});
+</code></pre>
+
+<p>}</p>
+
+<p>var <em>block=</em>blob.nextBlock();
+sendBlock(_block,null,null,success,error);//这里开始上传</p>
+
+<p>```
+通过上面这两段简单的代码，我们就可以实现一个文件的上传操作了。总结起来的步骤就是</p>
+
+<ol>
+<li>根据设定的blockSize从blob中取得下一个block</li>
+<li>上传block</li>
+<li>如果blob中还有block，回到1，否则到4</li>
+<li>commit刚刚上传的blob</li>
+</ol>
+
+
+<h3>并发控制</h3>
+
+<p>上面的步骤只是实现了最基本的上传功能，并且上传是单线程按序进行的，就是说一个文件同时只有一个block在上传，之后这个block上传成功了，下一个block才会开始上传。那么如果我想同时上传多个文件，并且同一个文件也可以多个block同时上传该怎么办呢？</p>
+
+<p>因为在ajax的请求中，所有动作都是异步的，那么有很多事情我们需要在回调函数中才能处理，这也是为什么上面的代码对外开放了success和error两个事件回调的主要原因。</p>
+
+<p>对于单个文件的上传，要支持多请求并发是比较容易实现的，可以设想一个请求计数器，初始值为我们预设的最大请求数量。设定一个循环，每发起一个请求，计数器自减1，每个请求成功了之后，同样是按照上面的规则，如果还有block，就开启一个新的请求,需要注意的是，只有所有的block全部上传成功了，我们才能进行blob的commit操作,需要对success方法做一个小改动。</p>
+
+<p>```js 并发上传blob
+var maxThread=20;</p>
+
+<p>function blobUploadFinished(blob){</p>
+
+<pre><code>for(var idx=0;idx&lt;blob.blocks.length;idx++){
+    if(blob.blocks[i].status!='success'){
+        return false;
+    }
+}
+return true;
+</code></pre>
+
+<p>}</p>
+
+<p>function success=(){</p>
+
+<pre><code>var blob=this.blob;
+var block =this.blob.nextBlock();
+if(block){
+    //这里开启一个新的请求上传获取到的下一个block
+    sendBlock(block,null,null,success,error);
+}else{
+    if(blobUploadFinished(blob)){//所有block都上传成功了，再commit
+        commitBlob(blob);
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<p>while(maxThread==-1 || maxThread>0){</p>
+
+<pre><code>//maxThread = -1意味着无限定，所有block可以同时上传，强烈不建议这样做，实测400M+的文件导致chrome崩溃(电脑配置也比较烂)
+var block =_blob.nextBlock();
+if(block){      
+    sendBlock(block,null,null,success,error);
+}
+if(maxThread&gt;0){
+    maxThread--;
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```
+一个blob的多请求并发上传功能实现了，那么如果我想对多个blob进行处理该怎么办呢？其实原理也是一样的，还是有一个最大请求限定，只不过我们需要事先将所有的blob放入一个数组，上面的while循环就多了一步验证所有blob是否全部没有待上传block的步骤。</p>
+
+<p>```js 并发上传多个blob</p>
+
+<p>var blobs=[];
+//push all your blob in blobs here.
+function nextBlock(){</p>
+
+<pre><code>var len = blobs.length;
+for(var idx=0;idx&lt;len;idx++){
+    var block=blobs[idx].nextBlock();
+    if(block){
+        return block;
+    }
+}
+return null;
+</code></pre>
+
+<p>}
+while(maxThread==-1 || maxThread>0){</p>
+
+<pre><code>var block =nextBlock();
+if(block){      
+    sendBlock(block,null,null,success,error);
+}
+if(maxThread&gt;0){
+    maxThread--;
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<h3>断点续传</h3>
+
+<p>细心的会很快发现，我们上面的代码都是围绕着success回调方法做一些简单的改动就可以实现单线程或者并发的上传操作，那么断点续传该怎样处理呢？bingo，答对了，error回调方法可以很好的帮我们解决这个问题。
+断点续传的简单思路就是将那些上传失败的block重新上传，直到所有block全部上传成功了，才结束提交blob，结束整个上传过程。</p>
+
+<p>```js 一个简单error回调的实现</p>
+
+<p>function error(){</p>
+
+<pre><code>sendBlock(this,null,null,success,error);
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>这个error回调真是简单到极致了，总觉得哪里有问题，不是么？当我有多个文件需要上传，而因为某种原因，这个block总是失败怎么办？那么他走时占用一个请求，循环啊循环，永无止境。我们做个小改动试试看。</p>
+
+<p>```js 改进的error回调</p>
+
+<p>function error(){</p>
+
+<pre><code>this.blob.addErrorBlock(this);
+var block=nextBlock();
+sendBlock(block,null,null,success,error);
+</code></pre>
+
+<p>}</p>
+
+<p>```
+在这段代码中，我们将失败的block加入到blob的失败列表中，接着从blob列表中获取取下一个可用的block进行上传。
+这样我们就实现了简单的断点续传功能。</p>
+
+<h3>补充说明</h3>
+
+<p>下面我们补充一下上面用到的但还没有见到长什么样子的代码。
+```js 久违的blob和block
+var blob = function(file,containerUrl,blockSize){</p>
+
+<pre><code>this.file=file;
+var qidx=containerUrl.indexOf("?");
+this.blobUrl=containerUrl.substring(0, qidx) + '/' + file.name;//记录blob的链接
+this.url=this.blobUrl + containerUrl.substring(qidx);//记录blob包括sas的链接
+this.blockSize=blockSize;
+this.errorBlocks=[];
+this.blocks=[];
+</code></pre>
+
+<p>}
+blob.prototype.nextBlock=function(){</p>
+
+<pre><code>var file=this.file;
+if(this.pointer&lt;file.size){
+    var _block = file.slice(this.pointer,this.pointer+this.fileSize);
+    this.pointer+=_block.size;
+    return new block(this,_block);
+}
+return this.errorBlocks.shift();
+</code></pre>
+
+<p>}</p>
+
+<p>blob.prototype.addErrorBlock(block){</p>
+
+<pre><code>this.errorBlocks.push(block);
+</code></pre>
+
+<p>}</p>
+
+<p>function padstr(num){</p>
+
+<pre><code>var str=''+num;
+while(true){
+    if(str.length&lt;6){
+        str+='0';
+    }
+}
+return num;
+</code></pre>
+
+<p>}</p>
+
+<p>var block=function(blob,fileSlice){</p>
+
+<pre><code>this.blob=blob;
+this.data=fileSlice;
+blob.blocks.push(this);
+this.id=btoa("block-" + pad(blob.blocks.length)).replace(/=/g, 'a');
+this.url=blob.url+'&amp;comp=block&amp;blockid=' + block.id;
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p><strong>注意</strong>文章中的代码片段只是提供一个思路，如果您需要完整的代码，请参考我github上的一个<a href="https://github.com/orcame/jquery-blobuploader">jquery插件</a>。</p>
+
+<h2>测试</h2>
+
+<p>我写了一个简单的测试页面，截图如下：
+<img src="/images/image-post/blobuploader-0.png"></p>
+
+<p>添加几个文件，做个简单的测试后，得到的数据如下</p>
+
+<table>
+<thead>
+<tr>
+<th>文件大小</th>
+<th>Block Size</th>
+<th>Max Thread</th>
+<th>最大速度</th>
+<th>最小速度</th>
+<th>平均速度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>364M</td>
+<td>2M</td>
+<td>20</td>
+<td>170M/S</td>
+<td>54K/S</td>
+<td>9.8M/S</td>
+</tr>
+<tr>
+<td>693M</td>
+<td>2M</td>
+<td>20</td>
+<td>290M/S</td>
+<td>126K/S</td>
+<td>12M/S</td>
+</tr>
+<tr>
+<td>693M</td>
+<td>4M</td>
+<td>10</td>
+<td>550M/S</td>
+<td>59K/S</td>
+<td>11.8M/S</td>
+</tr>
+<tr>
+<td>1.35M</td>
+<td>4M</td>
+<td>10</td>
+<td>4M/S</td>
+<td>110K/S</td>
+<td>680K/S</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>统计结果中最大速度波动比较大，这个基本都是瞬时速度，不具备什么参考价值。也有可能我统计的方式不对！</p>
+
+<h2>后记</h2>
+
+<p>这之后有做过一些测试，这个和当前的网络情况有很大关系，每隔一段时间，测试的结果波动都非常大。后来在Azure上面建了一个虚拟机，通过走数据中心内部的网络进行测试，对于135M左右的文件，基本稳定在5s以内可以上传完毕，这个速度还是非常可观的。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Windows Azure Shared Access Signature简介]]></title>

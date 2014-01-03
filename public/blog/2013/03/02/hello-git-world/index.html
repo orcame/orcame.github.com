@@ -362,12 +362,19 @@ rake preview
   
   <aside class="sidebar col-md-3">
     
-      <section class="panel panel-default no-border-radius">
+      <script type="text/javascript">
+$(document).ready(function(){
+    $('.page-content table').addClass('table').addClass('table-striped');
+});
+</script>
+<section class="panel panel-default no-border-radius">
   <div class="panel-heading">
     <h3 class="panel-title">Recent Posts</h3>
   </div>
   
   <div id="recent_posts" class="list-group">
+    
+    <a class="list-group-item " href="/blog/2014/01/02/upload-azure-blob-by-javascript/">通过Javascript上传文件到Azure存储服务器</a>
     
     <a class="list-group-item " href="/blog/2013/12/30/markdown-issue-list/">使用markdown问题汇总</a>
     
@@ -376,8 +383,6 @@ rake preview
     <a class="list-group-item " href="/blog/2013/12/26/octopress-multi-compoter/">如何在多台电脑上使用Octopress写博客</a>
     
     <a class="list-group-item " href="/blog/2013/12/26/git-memo/">Git备忘录</a>
-    
-    <a class="list-group-item " href="/blog/2013/12/25/xin-huan-xi-tong-zhi-tu-cao-rubyan-zhuang/">新换系统之吐槽ruby安装</a>
     
   </div>
 </section>
@@ -390,7 +395,7 @@ rake preview
 <section>
   <h1>Categories</h1>
   <ul id="categories">
-    <li class='category'><a href='/blog/categories/azure/'>azure (1)</a></li>
+    <li class='category'><a href='/blog/categories/azure/'>azure (2)</a></li>
 <li class='category'><a href='/blog/categories/git/'>git (1)</a></li>
 <li class='category'><a href='/blog/categories/golang/'>golang (1)</a></li>
 <li class='category'><a href='/blog/categories/howto/'>howto (2)</a></li>
@@ -541,7 +546,7 @@ rake preview
     </div>
     <footer role="contentinfo"><div class="container">
     <p class="text-muted credits">
-  Copyright &copy; 2013 - orcame<br>
+  Copyright &copy; 2014 - orcame<br>
   <small>
       <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>,
       <span class="credit">customized with <a href="https://github.com/kAworu/octostrap3">octostrap3</a></span>.

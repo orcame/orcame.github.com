@@ -122,6 +122,50 @@
   
 
 
+<time datetime="2014-01-02T19:32:00+08:00" pubdate data-updated="true">Jan 2<span>nd</span>, 2014</time>
+        
+           | <a href="/blog/2014/01/02/upload-azure-blob-by-javascript/#disqus_thread"
+             data-disqus-identifier="http://www.orcame.com/blog/2014/01/02/upload-azure-blob-by-javascript/">Comments</a>
+        
+      </p>
+    
+    
+      <h1 class="entry-title"><a href="/blog/2014/01/02/upload-azure-blob-by-javascript/">通过Javascript上传文件到Azure存储服务器</a></h1>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Azure的存储服务目前开通了跨域访问<a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a>请求功能，有了这个功能，我们就可以将被本地文件通过javascript上传到azure的存储服务器上了，而这个过程不需要任何服务器端代码就可以完成。你可以到这里看一下<a href="http://www.orcame.com/jquery-blobuploader/">演示效果</a>!下面来看看怎么实现这个功能。</p>
+
+</div>
+  
+  
+    <footer>
+      <a class="btn btn-default btn-link pull-right no-text-decoration no-padding" rel="full-article" href="/blog/2014/01/02/upload-azure-blob-by-javascript/">&raquo; Read on</a>
+    </footer>
+  
+
+
+        </article>
+      
+      
+        <article class="post">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+  
+
+
 <time datetime="2013-12-30T21:09:00+08:00" pubdate data-updated="true">Dec 30<span>th</span>, 2013</time>
         
            | <a href="/blog/2013/12/30/markdown-issue-list/#disqus_thread"
@@ -576,59 +620,11 @@
 
         </article>
       
-      
-        <article class="post">
-          
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-02T16:25:00+08:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2013</time>
-        
-           | <a href="/blog/2013/03/02/hello-git-world/#disqus_thread"
-             data-disqus-identifier="http://www.orcame.com/blog/2013/03/02/hello-git-world/">Comments</a>
-        
-      </p>
-    
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/02/hello-git-world/">GitHub + Octopress 搭建个人Blog</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>预备知识</h2>
-
-<h3>Octopress是什么？</h3>
-
-<p>Octopress是一个基于jekyll的博客系统，用Ruby语言编写。Octopress使用静态页面，内容不依赖于数据库，可以使用纯文本，HTML，markdown标记语言写文章。</p>
-
-</div>
-  
-  
-    <footer>
-      <a class="btn btn-default btn-link pull-right no-text-decoration no-padding" rel="full-article" href="/blog/2013/03/02/hello-git-world/">&raquo; Read on</a>
-    </footer>
-  
-
-
-        </article>
-      
     </div>
 
     <ul class="pager">
       
-        <li class="previous disabled"><a href="#">Older</a></li>
+        <li class="previous"><a href="/blog/page/2/">Older</a></li>
       
       <li class="archive"><a href="/blog/archives">Blog Archives</a></li>
       
@@ -640,12 +636,19 @@
   
     <aside class="sidebar col-md-3">
       
-        <section class="panel panel-default no-border-radius">
+        <script type="text/javascript">
+$(document).ready(function(){
+    $('.page-content table').addClass('table').addClass('table-striped');
+});
+</script>
+<section class="panel panel-default no-border-radius">
   <div class="panel-heading">
     <h3 class="panel-title">Recent Posts</h3>
   </div>
   
   <div id="recent_posts" class="list-group">
+    
+    <a class="list-group-item " href="/blog/2014/01/02/upload-azure-blob-by-javascript/">通过Javascript上传文件到Azure存储服务器</a>
     
     <a class="list-group-item " href="/blog/2013/12/30/markdown-issue-list/">使用markdown问题汇总</a>
     
@@ -654,8 +657,6 @@
     <a class="list-group-item " href="/blog/2013/12/26/octopress-multi-compoter/">如何在多台电脑上使用Octopress写博客</a>
     
     <a class="list-group-item " href="/blog/2013/12/26/git-memo/">Git备忘录</a>
-    
-    <a class="list-group-item " href="/blog/2013/12/25/xin-huan-xi-tong-zhi-tu-cao-rubyan-zhuang/">新换系统之吐槽ruby安装</a>
     
   </div>
 </section>
@@ -668,7 +669,7 @@
 <section>
   <h1>Categories</h1>
   <ul id="categories">
-    <li class='category'><a href='/blog/categories/azure/'>azure (1)</a></li>
+    <li class='category'><a href='/blog/categories/azure/'>azure (2)</a></li>
 <li class='category'><a href='/blog/categories/git/'>git (1)</a></li>
 <li class='category'><a href='/blog/categories/golang/'>golang (1)</a></li>
 <li class='category'><a href='/blog/categories/howto/'>howto (2)</a></li>
@@ -819,7 +820,7 @@
     </div>
     <footer role="contentinfo"><div class="container">
     <p class="text-muted credits">
-  Copyright &copy; 2013 - orcame<br>
+  Copyright &copy; 2014 - orcame<br>
   <small>
       <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>,
       <span class="credit">customized with <a href="https://github.com/kAworu/octostrap3">octostrap3</a></span>.
