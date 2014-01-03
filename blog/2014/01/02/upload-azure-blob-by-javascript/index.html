@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>通过Javascript上传文件到Azure存储服务器 - Code Infinity</title>
+  <meta name="author" content="orcame">
+
+  
+  <meta name="description" content="code is the constructor of the whole world.">
+  <meta name="keywords" content="azure blob javascript cors sas">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.orcame.com/blog/2014/01/02/upload-azure-blob-by-javascript">
+  <link href="/favicon.png" type="image/png" rel="icon">
+  <link href="/atom.xml" rel="alternate" title="Code Infinity" type="application/atom+xml">
+
+  <link href="/javascripts/libs/bootstrap-3.0.0/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<!-- <link href="/javascripts/libs/bootstrap-3.0.0/dist/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"> -->
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+
+  <script src="/javascripts/libs/jquery/jquery-2.0.3.min.js"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-44585503-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+  <body   >
+    <div id="wrap">
+      <header role="banner">
+        <hgroup class="raw">
+	<div class="container">
+	  <h1><a href="/" title="code is the constructor of the whole world."><span>Code</span><div class="infinity"><em>INFINITY</em></div></a></h1>
+	  
+	    <h2>Orcame's program world</h2>
+	  
+  	</div>
+</hgroup>
+        <nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Code Infinity</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="/">Blog</a>
+                </li>
+                <li >
+                    <a href="/blog/archives">Archives</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="subscribe-rss" href="/atom.xml" title="subscribe via RSS">
+                        <span class="visible-xs">RSS</span>
+                        <img class="hidden-xs" src="/images/rss.png" alt="RSS">
+                    </a>
+                </li>
+                
+            </ul>
+            
+                <form class="search navbar-form navbar-right" action="http://google.com/search" method="GET">
+                    <input type="hidden" name="q" value="site:www.orcame.com">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="q" placeholder="Search">
+                    </div>
+                </form>
+            
+        </div>
+    </div>
+</nav>
+
+
+      </header>
+      <div id="main" class="container">
+        <div id="content">
+          <div class="row">
+  <div class="page-content col-md-9">
+    <article class="hentry" role="article">
+      
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-02T19:32:00+08:00" pubdate data-updated="true">Jan 2<span>nd</span>, 2014</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://www.orcame.com">Comments</a>
+        
+      </p>
+    
+    
+    <h1 class="entry-title">
+        通过Javascript上传文件到Azure存储服务器
+        
+    </h1>
+    
+  </header>
+
+
+<div class="entry-content"><p>Azure的存储服务目前开通了跨域访问<a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a>请求功能，有了这个功能，我们就可以将被本地文件通过javascript上传到azure的存储服务器上了，而这个过程不需要任何服务器端代码就可以完成。废话少说!下面来看看怎么实现这个功能。</p>
+
+<!--more-->
+
+
+<h2>准备工具</h2>
+
+<ul>
+<li>支持HTML5的浏览器一枚</li>
+<li>文本编辑器一个</li>
+<li>javascript打字员一名</li>
+<li>测试上传用文件若干</li>
+</ul>
+
+
+<h2>准备条件</h2>
+
+<h3>存储服务器</h3>
+
+<p>经过一段时间的试用和测试，Windows Azure Storage的性能和稳定性都是非常高的，访问速度很快，这个我们可以用本次实验的结果给出证明。我选用了Azure中国(MoonCake)的存储服务，数据中心在上海。想要实现通过JS在浏览器端将文件提交到Azure Storage，需要满足以下两个条件。</p>
+
+<ol>
+<li>取得Azure Storage的访问权限
+ 有关这个问题，我前一篇博客已经对SAS做了比较详细的介绍，<a href="http://www.orcame.com/blog/2013/12/29/windows-azure-sas-introduce/">传送门</a>。我们这里采用在Container级别上设置SAS的方式取得对Azure Storage的访问权限</li>
+<li>将Azure Storage Account设置为允许跨域请求<br/>
+ Azure Storage已经开通了跨域请求功能，详细信息请移步<a href="http://blogs.msdn.com/b/windowsazurestorage/archive/2013/11/27/windows-azure-storage-release-introducing-cors-json-minute-metrics-and-more.aspx">这里</a>，默认是关闭的，要想使用这个功能，我们需要对存储账户做一些设置。不幸的是Azure Portal上找不到设置入口，你只能通过API来实现。截止目前(01/03/2014)，MoonCake平台依然不能运行Azure SDK 2.2以上版本(如果你胆敢发布一个基于SDK2.2的Cloud Service，那么MoonCake很生气，后果很严重——不但你的Cloud Service发布失败，而且你的整个Subscription的Portal页面也全挂了)，但亲测在本地运行Azure Storage SDK3.0是可以成功开启MoonCake上Storage的CORS功能的。</li>
+</ol>
+
+
+<p>附上开启CORS功能的API:</p>
+
+<figure class='code'><figcaption><span>为Azure Storage Account开启CORS功能</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">OpenCors</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">CloudStorageAccount</span> <span class="n">account</span> <span class="p">=</span> <span class="n">CloudStorageAccount</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">connectionString</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">CloudBlobClient</span> <span class="n">client</span> <span class="p">=</span> <span class="n">account</span><span class="p">.</span><span class="n">CreateCloudBlobClient</span><span class="p">();</span>
+</span><span class='line'>  <span class="n">ServiceProperties</span> <span class="n">propers</span> <span class="p">=</span> <span class="n">client</span><span class="p">.</span><span class="n">GetServiceProperties</span><span class="p">();</span>
+</span><span class='line'>  <span class="n">CorsRule</span> <span class="n">cr</span> <span class="p">=</span> <span class="k">new</span> <span class="n">CorsRule</span><span class="p">();</span>
+</span><span class='line'>  <span class="n">cr</span><span class="p">.</span><span class="n">AllowedMethods</span> <span class="p">=</span> <span class="n">CorsHttpMethods</span><span class="p">.</span><span class="n">Put</span> <span class="p">|</span> <span class="n">CorsHttpMethods</span><span class="p">.</span><span class="n">Options</span> <span class="p">|</span> <span class="n">CorsHttpMethods</span><span class="p">.</span><span class="n">Post</span> <span class="p">|</span> <span class="n">CorsHttpMethods</span><span class="p">.</span><span class="n">Delete</span> <span class="p">|</span> <span class="n">CorsHttpMethods</span><span class="p">.</span><span class="n">Get</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">cr</span><span class="p">.</span><span class="n">AllowedOrigins</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;[your domain]&quot;</span><span class="p">);</span><span class="c1">//http://www.orcame.com for example</span>
+</span><span class='line'>  <span class="n">cr</span><span class="p">.</span><span class="n">AllowedHeaders</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">cr</span><span class="p">.</span><span class="n">MaxAgeInSeconds</span> <span class="p">=</span> <span class="m">200</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">propers</span><span class="p">.</span><span class="n">Cors</span> <span class="p">=</span> <span class="k">new</span> <span class="n">CorsProperties</span><span class="p">();</span>
+</span><span class='line'>  <span class="n">propers</span><span class="p">.</span><span class="n">Cors</span><span class="p">.</span><span class="n">CorsRules</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">cr</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">client</span><span class="p">.</span><span class="n">SetServiceProperties</span><span class="p">(</span><span class="n">propers</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>浏览器</h3>
+
+<p>用javascript上传文件我们必须能够取得对本地文件的读取操作，在HTML5之前这是不被允许的，
+现代浏览器为我们提供了一个崭新的javascript API，FileReader，这使得我们可以异步的读取本地文件，甚至可以将文件拆分。有关FileReader的用法，我们在接下来的代码环节进行展开。</p>
+
+<h2>功能列表</h2>
+
+<p>本次实验我们要实现的功能如下</p>
+
+<ol>
+<li>文件上传</li>
+<li>并发控制</li>
+<li>断点续传</li>
+</ol>
+
+
+<h2>实验步骤</h2>
+
+<h3>文件上传</h3>
+
+<p>根据前面的分析，想要实现一个文件上传功能，需要用到FileReader对本地文件进行读取，然后通过ajax来发起上传请求到Azure Storage服务器</p>
+
+<p>对于File,FileReader类，这里不做更详细的介绍，仅仅说明一下这里需要用到的方法和事件。</p>
+
+<ul>
+<li>File.slice(start,end)
+  有关slice方法的详细介绍请参考<a href="http://www.w3.org/TR/FileAPI/#slice-method-algo">这里</a>,简单来讲，就是这个方法可以根据传入的start和end将一个文件拆分成一个块（在js中叫blob，在azure中叫block，而在azure中js中的file叫blob，我勒个去，好绕），假设我们有一个<code>&lt;input type='file'/&gt;</code>控件，那么当我们选定了一个文件之后，是可以通过<code>files[0]</code>取得当前文件的实例的。</li>
+<li>FileReader.readAsArrayBuffer(blob)
+  惯例，官方文档在<a href="http://www.w3.org/TR/FileAPI/#readAsArrayBuffer">这里</a>,这个方法可以将一个blob(azure中的block)读入到FileReader实例中</li>
+<li>FileReader.onloadend(ev)
+  <a href="http://www.w3.org/TR/FileAPI/#event-handler-attributes-section">传送门</a>,简单来讲这是一个事件，当上面的readAsArrayBuffer执行结束后会触发这个事件。</li>
+</ul>
+
+
+<p>关于ajax请求如何发送，这里不赘述，请参考jquery<a href="http://api.jquery.com/jquery.ajax/">文档</a></p>
+
+<p>在正式开始之前，我们得先明确几个概念</p>
+
+<ul>
+<li>File(JS):指代本地一个文件</li>
+<li>Blob(JS):指代本地文件被拆分出的一块，相当于Azure中的Block</li>
+<li>Blob(Azure):一个文件，可以由无数个Block组成</li>
+<li>Block:无数个Block组成一个Blob</li>
+</ul>
+
+
+<p>为简单起见，本文以下内容，对于文件统称blob，块统称block</p>
+
+<p>说了好多废话，现在开席，上菜了。</p>
+
+<p>有了上面的介绍，一个内容上传的功能就很容易实现了，且看代码</p>
+
+<figure class='code'><figcaption><span>上传block代码</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">sendBlock</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">block</span><span class="p">,</span> <span class="nx">beforeSend</span><span class="p">,</span> <span class="nx">progress</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">url</span><span class="o">:</span> <span class="nx">block</span><span class="p">.</span><span class="nx">url</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;PUT&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">data</span><span class="o">:</span> <span class="nx">block</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">processData</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">xhr</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="kd">var</span> <span class="nx">_xhr</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajaxSettings</span><span class="p">.</span><span class="nx">xhr</span><span class="p">();</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="nx">_xhr</span><span class="p">.</span><span class="nx">upload</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">_xhr</span><span class="p">.</span><span class="nx">upload</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;progress&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                  <span class="c1">//这里为了获取上传进度，我们添加了progress事件，在事件中可以做一些UI上的进度显示功能</span>
+</span><span class='line'>                  <span class="k">if</span> <span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">lengthComputable</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                      <span class="k">if</span> <span class="p">(</span><span class="nx">progress</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                          <span class="nx">progress</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">block</span><span class="p">,</span><span class="nx">ev</span><span class="p">.</span><span class="nx">loaded</span><span class="p">,</span><span class="nx">ev</span><span class="p">.</span><span class="nx">total</span><span class="p">)</span>
+</span><span class='line'>                      <span class="p">}</span>
+</span><span class='line'>                  <span class="p">}</span>
+</span><span class='line'>              <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>          <span class="k">return</span> <span class="nx">_xhr</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="nx">beforeSend</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">block</span><span class="p">.</span><span class="nx">status</span><span class="o">=</span><span class="s1">&#39;uploading&#39;</span><span class="p">;</span>
+</span><span class='line'>          <span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="s1">&#39;x-ms-blob-type&#39;</span><span class="p">,</span> <span class="s1">&#39;BlockBlob&#39;</span><span class="p">);</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="nx">beforeSend</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>              <span class="c1">//在上传开始之前，你可以通过这个事件做一些小动作</span>
+</span><span class='line'>              <span class="nx">beforeSend</span><span class="p">(</span><span class="nx">xhr</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">sta</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">block</span><span class="p">.</span><span class="nx">status</span><span class="o">=</span><span class="s1">&#39;success&#39;</span><span class="p">;</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="nx">success</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>              <span class="c1">//上传成功后，用这个方法通知UI</span>
+</span><span class='line'>              <span class="nx">success</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">block</span><span class="p">,</span><span class="nx">data</span><span class="p">,</span> <span class="nx">status</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="nx">error</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">,</span> <span class="nx">desc</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">block</span><span class="p">.</span><span class="nx">status</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">;</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>              <span class="c1">//同理，失败了用这个方法通知UI</span>
+</span><span class='line'>              <span class="nx">error</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">block</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">desc</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面就是一个最基本的block上传功能，如果要实现一个blob的上传,我们还需要做进一步的改进。首先就需要对blob进行拆分，因为azure的storage对block的大小有个限制，最大不能超过4M，所以我们的拆分上限就是4M。
+有了上面的代码片段，实现一个blob的上传就很容易了，我们可以传入success方法，在前一个block上传成功了之后继续上传下一个block，直到所有block全部上传完毕。下面仅仅给出逻辑实现：</p>
+
+<figure class='code'><figcaption><span>上传一个blob</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">_blob</span><span class="p">;</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">success</span><span class="o">=</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">block</span> <span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">blob</span><span class="p">.</span><span class="nx">nextBlock</span><span class="p">();</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">block</span><span class="p">){</span>
+</span><span class='line'>      <span class="c1">//在这里，我们做一个递归调用，一旦block上传完毕，就继续上传下一个block，直到所有block都完成为止。</span>
+</span><span class='line'>      <span class="nx">sendBlock</span><span class="p">(</span><span class="nx">block</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="nx">success</span><span class="p">,</span><span class="nx">error</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span><span class='line'>      <span class="c1">//所有Block都上传完成了，这里需要做一个commit动作，就是通知azure storage，我刚刚上传的那些block是属于同一个blob的，请合并。</span>
+</span><span class='line'>      <span class="nx">commitBlob</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">blob</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">error</span><span class="p">(){</span>
+</span><span class='line'>  <span class="c1">//预留占位 </span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">commitBlob</span><span class="p">(</span><span class="nx">blob</span><span class="p">,</span><span class="nx">success</span><span class="p">,</span><span class="nx">error</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">uri</span> <span class="o">=</span> <span class="nx">blob</span><span class="p">.</span><span class="nx">url</span> <span class="o">+</span> <span class="s1">&#39;&amp;comp=blocklist&#39;</span>
+</span><span class='line'>      <span class="p">,</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>      <span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">blob</span><span class="p">.</span><span class="nx">blocks</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//blob的commit需要提供一个blockid列表，这个列表中的所有项的长度必须一致，并且顺序不能错乱</span>
+</span><span class='line'>    <span class="nx">data</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;BlockList&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">data</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;&lt;Latest&gt;&#39;</span> <span class="o">+</span> <span class="nx">blob</span><span class="p">.</span><span class="nx">blocks</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">id</span> <span class="o">+</span> <span class="s1">&#39;&lt;/Latest&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">data</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;&lt;/BlockList&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">url</span><span class="o">:</span> <span class="nx">uri</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;PUT&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+</span><span class='line'>        <span class="nx">beforeSend</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="s1">&#39;x-ms-blob-content-type&#39;</span><span class="p">,</span> <span class="nx">blob</span><span class="p">.</span><span class="nx">type</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">sta</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">success</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">success</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">sta</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nx">error</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">,</span> <span class="nx">desc</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">error</span><span class="p">(</span><span class="nx">xhr</span><span class="p">,</span> <span class="nx">desc</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">_block</span><span class="o">=</span><span class="nx">_blob</span><span class="p">.</span><span class="nx">nextBlock</span><span class="p">();</span>
+</span><span class='line'><span class="nx">sendBlock</span><span class="p">(</span><span class="nx">_block</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="nx">success</span><span class="p">,</span><span class="nx">error</span><span class="p">);</span><span class="c1">//这里开始上传</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过上面这两段简单的代码，我们就可以实现一个文件的上传操作了。总结起来的步骤就是</p>
+
+<ol>
+<li>根据设定的blockSize从blob中取得下一个block</li>
+<li>上传block</li>
+<li>如果blob中还有block，回到1，否则到4</li>
+<li>commit刚刚上传的blob</li>
+</ol>
+
+
+<h3>并发控制</h3>
+
+<p>上面的步骤只是实现了最基本的上传功能，并且上传是单线程按序进行的，就是说一个文件同时只有一个block在上传，之后这个block上传成功了，下一个block才会开始上传。那么如果我想同时上传多个文件，并且同一个文件也可以多个block同时上传该怎么办呢？</p>
+
+<p>因为在ajax的请求中，所有动作都是异步的，那么有很多事情我们需要在回调函数中才能处理，这也是为什么上面的代码对外开放了success和error两个事件回调的主要原因。</p>
+
+<p>对于单个文件的上传，要支持多请求并发是比较容易实现的，可以设想一个请求计数器，初始值为我们预设的最大请求数量。设定一个循环，每发起一个请求，计数器自减1，每个请求成功了之后，同样是按照上面的规则，如果还有block，就开启一个新的请求,需要注意的是，只有所有的block全部上传成功了，我们才能进行blob的commit操作,需要对success方法做一个小改动。</p>
+
+<figure class='code'><figcaption><span>并发上传blob</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">maxThread</span><span class="o">=</span><span class="mi">20</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">blobUploadFinished</span><span class="p">(</span><span class="nx">blob</span><span class="p">){</span>
+</span><span class='line'>  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">idx</span><span class="o">&lt;</span><span class="nx">blob</span><span class="p">.</span><span class="nx">blocks</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">idx</span><span class="o">++</span><span class="p">){</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="nx">blob</span><span class="p">.</span><span class="nx">blocks</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">status</span><span class="o">!=</span><span class="s1">&#39;success&#39;</span><span class="p">){</span>
+</span><span class='line'>          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">success</span><span class="o">=</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">blob</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">blob</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">block</span> <span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">blob</span><span class="p">.</span><span class="nx">nextBlock</span><span class="p">();</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">block</span><span class="p">){</span>
+</span><span class='line'>      <span class="c1">//这里开启一个新的请求上传获取到的下一个block</span>
+</span><span class='line'>      <span class="nx">sendBlock</span><span class="p">(</span><span class="nx">block</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="nx">success</span><span class="p">,</span><span class="nx">error</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="nx">blobUploadFinished</span><span class="p">(</span><span class="nx">blob</span><span class="p">)){</span><span class="c1">//所有block都上传成功了，再commit</span>
+</span><span class='line'>          <span class="nx">commitBlob</span><span class="p">(</span><span class="nx">blob</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">while</span><span class="p">(</span><span class="nx">maxThread</span><span class="o">==-</span><span class="mi">1</span> <span class="o">||</span> <span class="nx">maxThread</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">){</span>
+</span><span class='line'>  <span class="c1">//maxThread = -1意味着无限定，所有block可以同时上传，强烈不建议这样做，实测400M+的文件导致chrome崩溃(电脑配置也比较烂)</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">block</span> <span class="o">=</span><span class="nx">_blob</span><span class="p">.</span><span class="nx">nextBlock</span><span class="p">();</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">block</span><span class="p">){</span>     
+</span><span class='line'>      <span class="nx">sendBlock</span><span class="p">(</span><span class="nx">block</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="nx">success</span><span class="p">,</span><span class="nx">error</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">maxThread</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">){</span>
+</span><span class='line'>      <span class="nx">maxThread</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一个blob的多请求并发上传功能实现了，那么如果我想对多个blob进行处理该怎么办呢？其实原理也是一样的，还是有一个最大请求限定，只不过我们需要事先将所有的blob放入一个数组，上面的while循环就多了一步验证所有blob是否全部没有待上传block的步骤。</p>
+
+<figure class='code'><figcaption><span>并发上传多个blob</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">blobs</span><span class="o">=</span><span class="p">[];</span>
+</span><span class='line'><span class="c1">//push all your blob in blobs here.</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">nextBlock</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">blobs</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">idx</span><span class="o">&lt;</span><span class="nx">len</span><span class="p">;</span><span class="nx">idx</span><span class="o">++</span><span class="p">){</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">block</span><span class="o">=</span><span class="nx">blobs</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">nextBlock</span><span class="p">();</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="nx">block</span><span class="p">){</span>
+</span><span class='line'>          <span class="k">return</span> <span class="nx">block</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">while</span><span class="p">(</span><span class="nx">maxThread</span><span class="o">==-</span><span class="mi">1</span> <span class="o">||</span> <span class="nx">maxThread</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">block</span> <span class="o">=</span><span class="nx">nextBlock</span><span class="p">();</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">block</span><span class="p">){</span>     
+</span><span class='line'>      <span class="nx">sendBlock</span><span class="p">(</span><span class="nx">block</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="nx">success</span><span class="p">,</span><span class="nx">error</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">maxThread</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">){</span>
+</span><span class='line'>      <span class="nx">maxThread</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>断点续传</h3>
+
+<p>细心的会很快发现，我们上面的代码都是围绕着success回调方法做一些简单的改动就可以实现单线程或者并发的上传操作，那么断点续传该怎样处理呢？bingo，答对了，error回调方法可以很好的帮我们解决这个问题。
+断点续传的简单思路就是将那些上传失败的block重新上传，直到所有block全部上传成功了，才结束提交blob，结束整个上传过程。</p>
+
+<figure class='code'><figcaption><span>一个简单error回调的实现</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">error</span><span class="p">(){</span>
+</span><span class='line'><span class="nx">sendBlock</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="nx">success</span><span class="p">,</span><span class="nx">error</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个error回调真是简单到极致了，总觉得哪里有问题，不是么？当我有多个文件需要上传，而因为某种原因，这个block总是失败怎么办？那么他走时占用一个请求，循环啊循环，永无止境。我们做个小改动试试看。</p>
+
+<figure class='code'><figcaption><span>改进的error回调</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">error</span><span class="p">(){</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">blob</span><span class="p">.</span><span class="nx">addErrorBlock</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">block</span><span class="o">=</span><span class="nx">nextBlock</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">sendBlock</span><span class="p">(</span><span class="nx">block</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="nx">success</span><span class="p">,</span><span class="nx">error</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这段代码中，我们将失败的block加入到blob的失败列表中，接着从blob列表中获取取下一个可用的block进行上传。
+这样我们就实现了简单的断点续传功能。</p>
+
+<h3>补充说明</h3>
+
+<p>下面我们补充一下上面用到的但还没有见到长什么样子的代码。</p>
+
+<figure class='code'><figcaption><span>久违的blob和block</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">blob</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span><span class="nx">containerUrl</span><span class="p">,</span><span class="nx">blockSize</span><span class="p">){</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">file</span><span class="o">=</span><span class="nx">file</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">qidx</span><span class="o">=</span><span class="nx">containerUrl</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">blobUrl</span><span class="o">=</span><span class="nx">containerUrl</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">qidx</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nx">file</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span><span class="c1">//记录blob的链接</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">url</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">blobUrl</span> <span class="o">+</span> <span class="nx">containerUrl</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">qidx</span><span class="p">);</span><span class="c1">//记录blob包括sas的链接</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">blockSize</span><span class="o">=</span><span class="nx">blockSize</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">errorBlocks</span><span class="o">=</span><span class="p">[];</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">blocks</span><span class="o">=</span><span class="p">[];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">blob</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">nextBlock</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">file</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">file</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">pointer</span><span class="o">&lt;</span><span class="nx">file</span><span class="p">.</span><span class="nx">size</span><span class="p">){</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">_block</span> <span class="o">=</span> <span class="nx">file</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">pointer</span><span class="p">,</span><span class="k">this</span><span class="p">.</span><span class="nx">pointer</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">fileSize</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">pointer</span><span class="o">+=</span><span class="nx">_block</span><span class="p">.</span><span class="nx">size</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">new</span> <span class="nx">block</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="nx">_block</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">errorBlocks</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">blob</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">addErrorBlock</span><span class="p">(</span><span class="nx">block</span><span class="p">){</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">errorBlocks</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">block</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">padstr</span><span class="p">(</span><span class="nx">num</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">+</span><span class="nx">num</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="kc">true</span><span class="p">){</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="nx">str</span><span class="p">.</span><span class="nx">length</span><span class="o">&lt;</span><span class="mi">6</span><span class="p">){</span>
+</span><span class='line'>          <span class="nx">str</span><span class="o">+=</span><span class="s1">&#39;0&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">num</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">block</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">blob</span><span class="p">,</span><span class="nx">fileSlice</span><span class="p">){</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">blob</span><span class="o">=</span><span class="nx">blob</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">data</span><span class="o">=</span><span class="nx">fileSlice</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">blob</span><span class="p">.</span><span class="nx">blocks</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="o">=</span><span class="nx">btoa</span><span class="p">(</span><span class="s2">&quot;block-&quot;</span> <span class="o">+</span> <span class="nx">pad</span><span class="p">(</span><span class="nx">blob</span><span class="p">.</span><span class="nx">blocks</span><span class="p">.</span><span class="nx">length</span><span class="p">)).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/=/g</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">url</span><span class="o">=</span><span class="nx">blob</span><span class="p">.</span><span class="nx">url</span><span class="o">+</span><span class="s1">&#39;&amp;comp=block&amp;blockid=&#39;</span> <span class="o">+</span> <span class="nx">block</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>注意</strong>文章中的代码片段只是提供一个思路，如果您需要完整的代码，请参考我github上的一个<a href="https://github.com/orcame/jquery-blobuploader">jquery插件</a>。</p>
+
+<h2>测试</h2>
+
+<p>我写了一个简单的测试页面，截图如下：
+<img src="/images/image-post/blobuploader-0.png"></p>
+
+<p>添加几个文件，做个简单的测试后，得到的数据如下</p>
+
+<table>
+<thead>
+<tr>
+<th>文件大小</th>
+<th>Block Size</th>
+<th>Max Thread</th>
+<th>最大速度</th>
+<th>最小速度</th>
+<th>平均速度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>364M</td>
+<td>2M</td>
+<td>20</td>
+<td>170M/S</td>
+<td>54K/S</td>
+<td>9.8M/S</td>
+</tr>
+<tr>
+<td>693M</td>
+<td>2M</td>
+<td>20</td>
+<td>290M/S</td>
+<td>126K/S</td>
+<td>12M/S</td>
+</tr>
+<tr>
+<td>693M</td>
+<td>4M</td>
+<td>10</td>
+<td>550M/S</td>
+<td>59K/S</td>
+<td>11.8M/S</td>
+</tr>
+<tr>
+<td>1.35M</td>
+<td>4M</td>
+<td>10</td>
+<td>4M/S</td>
+<td>110K/S</td>
+<td>680K/S</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>统计结果中最大速度波动比较大，这个基本都是瞬时速度，不具备什么参考价值。也有可能我统计的方式不对！</p>
+
+<h2>后记</h2>
+
+<p>这之后有做过一些测试，这个和当前的网络情况有很大关系，每隔一段时间，测试的结果波动都非常大。后来在Azure上面建了一个虚拟机，通过走数据中心内部的网络进行测试，对于135M左右的文件，基本稳定在5s以内可以上传完毕，这个速度还是非常可观的。</p>
+</div>
+
+
+      <footer>
+        <p class="meta text-muted">
+          
+  
+
+<span class="byline author vcard">Posted by <span class="fn">orcame</span></span>
+
+          
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-02T19:32:00+08:00" pubdate data-updated="true">Jan 2<span>nd</span>, 2014</time>
+          
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/azure/'>azure</a>
+  
+</span>
+
+
+        </p>
+        
+          <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.orcame.com/blog/2014/01/02/upload-azure-blob-by-javascript/" data-via="" data-counturl="http://www.orcame.com/blog/2014/01/02/upload-azure-blob-by-javascript/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+        
+        
+          <ul class="meta text-muted pager">
+            
+            <li class="previous"><a class="clear-ba"  href="/blog/2013/12/30/markdown-issue-list/" title="Previous Post: 使用markdown问题汇总">&laquo; 使用markdown问题汇总</a></li>
+            
+            
+          </ul>
+        
+      </footer>
+    </article>
+    
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+      </section>
+    
+  </div>
+
+  
+  <aside class="sidebar col-md-3">
+    
+      <script type="text/javascript">
+$(document).ready(function(){
+    $('.page-content table').addClass('table').addClass('table-striped');
+});
+</script>
+<section class="panel panel-default no-border-radius">
+  <div class="panel-heading">
+    <h3 class="panel-title">Recent Posts</h3>
+  </div>
+  
+  <div id="recent_posts" class="list-group">
+    
+    <a class="list-group-item active" href="/blog/2014/01/02/upload-azure-blob-by-javascript/">通过Javascript上传文件到Azure存储服务器</a>
+    
+    <a class="list-group-item " href="/blog/2013/12/30/markdown-issue-list/">使用markdown问题汇总</a>
+    
+    <a class="list-group-item " href="/blog/2013/12/29/windows-azure-sas-introduce/">Windows Azure Shared Access Signature简介</a>
+    
+    <a class="list-group-item " href="/blog/2013/12/26/octopress-multi-compoter/">如何在多台电脑上使用Octopress写博客</a>
+    
+    <a class="list-group-item " href="/blog/2013/12/26/git-memo/">Git备忘录</a>
+    
+  </div>
+</section>
+
+<section>
+  <h1>About Me</h1>
+  <p>code is the constructor of the whole world.</p>
+</section>
+
+<section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/azure/'>azure (2)</a></li>
+<li class='category'><a href='/blog/categories/git/'>git (1)</a></li>
+<li class='category'><a href='/blog/categories/golang/'>golang (1)</a></li>
+<li class='category'><a href='/blog/categories/howto/'>howto (2)</a></li>
+<li class='category'><a href='/blog/categories/linux/'>linux (1)</a></li>
+<li class='category'><a href='/blog/categories/markdown/'>markdown (1)</a></li>
+<li class='category'><a href='/blog/categories/octopress/'>octopress (1)</a></li>
+<li class='category'><a href='/blog/categories/others/'>others (2)</a></li>
+
+  </ul>
+</section>
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+      <h3 class="panel-title">External Links</h3>
+  </div>
+  <div class="list-group" id="el_repos">
+  </div>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        var links=[
+          {
+            'name':'Windows Azure Training Kit',
+            'description':'hands-on labs, presentations, and samples',
+            'url':'http://azuretk.com'
+          },
+          {
+            'name':'Blair CHEN',
+            'description':'blchen的工作总结和日常开发笔记',
+            'url':'http://blchen.com'
+          },
+          {
+            'name':'LeiZhang Azure Articles',
+            'description':'张磊(Azure MVP)的Azure系列文章',
+            'url':'http://www.cnblogs.com/threestone/archive/2012/01/06/2382322.html'
+          },
+          {
+            'name':'Azure Speed Test',
+            'description':'Azure Storage测速网站',
+            'url':'http://www.azurespeed.com/'
+          }
+        ]
+        var t=$('#el_repos'), item=$('<div class="list-group-item"/>');
+        $.each(links,function(){
+          var h=$('<h4 class="list-group-item-heading">')
+            .append('<a target="_blank" href="'+this.url+'">'+this.name+'</a>');
+          var p=$('<p class="text-muted"/>').text(this.description);
+          item.append(h,p);
+        })
+        t.append(item);
+    });
+  </script>
+</section>
+
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+      <h3 class="panel-title">GitHub Repos</h3>
+  </div>
+  <div class="list-group" id="gh_repos">
+    <p class="loading">Status updating...</p>
+  </div>
+  
+    <div class="gh-profile-link pull-right text-muted">
+      <a target="_blank" href="https://github.com/orcame">@orcame</a> on GitHub
+    </div>
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'orcame',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+        <h3 class="panel-title">Coderwall</h3>
+  </div>
+  <div class="list-group" id="cw_repos">
+    <p class="loading">Status updating...</p>
+  </div>
+  
+    <div class="gh-profile-link pull-right text-muted">
+      <a target="_blank" href="https://coderwall.com/orcame">@orcame</a> on CoderWall
+    </div>
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        coderwall.showRepos({
+            user: 'orcame',
+            target: '#cw_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/coderwall.js" type="text/javascript"> </script>
+  <style type="text/css">
+  #cw_repos img{
+      margin-top:15px;
+      margin-bottom:15px;
+  }
+  </style>
+</section>
+
+<section class="panel panel-default clearfix no-border-radius">
+  <div class="panel-heading">
+      <h3 class="panel-title">Sina Weibo</h3>
+  </div>
+  <div id="weibo_repos">
+  	<iframe width="100%" height="350" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=zh_cn&amp;width=0&amp;height=350&amp;ptype=1&amp;speed=&amp;skin=1&amp;isTitle=0&amp;noborder=0&amp;isWeibo=0&amp;uid=3835412420&amp;verifier=61ac6817&amp;dpc=1"></iframe>
+  </div>
+</section>
+
+
+
+
+
+
+
+    
+  </aside>
+  
+</div>
+
+        </div>
+      </div>
+    </div>
+    <footer role="contentinfo"><div class="container">
+    <p class="text-muted credits">
+  Copyright &copy; 2014 - orcame<br>
+  <small>
+      <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>,
+      <span class="credit">customized with <a href="https://github.com/kAworu/octostrap3">octostrap3</a></span>.
+  </small>
+</p>
+
+</div>
+</footer>
+    <script src="/javascripts/libs/bootstrap-3.0.0/dist/js/bootstrap.min.js"></script>
+<script src="/javascripts/modernizr-2.0.js"></script>
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'orcame';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.orcame.com/blog/2014/01/02/upload-azure-blob-by-javascript/';
+        var disqus_url = 'http://www.orcame.com/blog/2014/01/02/upload-azure-blob-by-javascript/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+  </body>
+</html>
