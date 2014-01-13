@@ -4,12 +4,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>如何在多台电脑上使用Octopress写博客 - Code Infinity</title>
+  <title>又折腾Linux系统 - Code Infinity</title>
   <meta name="author" content="orcame">
 
   
-  <meta name="description" content="如何在多台电脑上使用Octopress写博客">
-  <meta name="keywords" content="octopress,multi-computer">
+  <meta name="description" content="the things need to do after install ubuntu">
+  <meta name="keywords" content="ubuntu qq alt tab broadcom nvidia gnome">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -17,7 +17,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.orcame.com/blog/2013/12/26/octopress-multi-compoter">
+  <link rel="canonical" href="http://www.orcame.com/blog/2014/01/13/after-install-ubuntu">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="Code Infinity" type="application/atom+xml">
 
@@ -118,7 +118,7 @@
   
 
 
-<time datetime="2013-12-26T13:56:00+08:00" pubdate data-updated="true">Dec 26<span>th</span>, 2013</time>
+<time datetime="2014-01-13T20:42:00+08:00" pubdate data-updated="true">Jan 13<span>th</span>, 2014</time>
         
            | <a href="#disqus_thread"
              data-disqus-identifier="http://www.orcame.com">Comments</a>
@@ -127,71 +127,104 @@
     
     
     <h1 class="entry-title">
-        如何在多台电脑上使用Octopress写博客
+        又折腾Linux系统
         
     </h1>
     
   </header>
 
 
-<div class="entry-content"><p>英文好的，请直接猛击<a href="http://blog.zerosharp.com/clone-your-octopress-to-blog-from-two-places/">这里</a>。英文不好的，就听我啰嗦几句。</p>
+<div class="entry-content"><p>最近手痒，mint主题换过之后总是各种问题不断，换回默认的主题又看着那些个方块疙瘩图标实在是碍眼，终于忍不住动手了。</p>
 
-<p>先来讲讲基础知识，我们需要有两个branch，一个叫<code>master</code>，这个是默认的，不能改，被存储在blog根目录的<code>_deploy</code>文件夹下，是用来存放生成好的blog站点文件的。另一个叫<code>source</code>(名字可以自己定义，此文中指定为<em>source</em>),是用来存放markdown源文件，theme，plugin等用于生成blog所需要的所有文件的。</p>
+<h2>Fedora</h2>
 
-<!--more-->
+<p>先是安装了fedora，fedora(gnome)界面简简单单，是我喜欢的风格，只是那个terminal不能背景透明真是很坑爹的(这个要怪gnome的)，非常不方便。<br/>
+先来说说broadcom驱动的安装，网上有很多这个教程，均以失败告终。还是官方的比较靠谱，找到这个<a href="http://zh-cn.broadcom.com/support/802.11/linux_sta.php">下载链接</a>，安装方法在README里面。简单来讲，有两种方法</p>
+
+<ol>
+<li>通过源文件安装
+ 这种方法比较繁琐，在上面链接中的<a href="http://zh-cn.broadcom.com/docs/linux_sta/README.txt">README</a>里面有安装过程的说明，如果是和我一样linux小白的话，一定要认真阅读。</li>
+<li><p>通过yum安装
+ 这种方法就比较人性咯，在上面的<a href="http://zh-cn.broadcom.com/docs/linux_sta/README.txt">README</a>里面也是有提及到的，这里也贴出来供欣赏</p>
+
+<pre><code> su -c 'rpm -Uvh 
+ http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm 
+ http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-stable.noarch.rpm'
+
+ su -
+ yum update //在这一步的时候总是提示一个错误，说xxx不是xxxx或者没有menifest文件，大概是这个，忘了具体是什么了。这会导致下一个命令找不到kmod-wl，多试几次yum update后，突然成功了。这东西太脆弱！
+ yum install kmod-wl
+</code></pre></li>
+</ol>
 
 
-<p>如果你是按照<a href="http://www.orcame.com/blog/2013/03/02/hello-git-world/">这个</a>方式创建的博客，那么你远端是没有<code>source</code>分支的(如果远端已经创建<code>source分</code>支,请略过)。首先需要创建一个<code>source</code>分支，在本地blog根目录下执行</p>
+<p>再说说显卡驱动的安装，这个总体来说比较折腾了，我按照这个<a href="http://blog.csdn.net/uuleaf/article/details/7637341">博客</a>的方法安装成功了。</p>
 
-<pre><code>git branch source   //创建本地source分支
-git checkout source //切换本地分支到source
-git add --all           //将所有文件add到source分支
-git commit -m "init"    //commit
-git push origin source  //将source分支push到服务器
+<h2>Ubuntu</h2>
+
+<p>严重的强迫症患者就是贱毛病多的，终于还是无法忍受那个不透明的终端了，虽然用的也不多，而且很怀念ubuntu那个经典的主题，最后还是决定换回Ubuntu（12.04）了。<br/>
+对于初学者来讲，Ubuntu的确是很方便的，无线和显卡驱动起码不用太费心了。</p>
+
+<h3>换主题</h3>
+
+<p>Unity也许很优秀，但就是看不惯，个人觉得巨难用无比，那么第一步当然是切换回gnome classic主题</p>
+
+<pre><code>sudo apt-get install gnome-panel
 </code></pre>
 
-<p>这样便将本地所有源文件(除了<code>_deploy</code>文件夹下的内容)push到远端的<code>source</code>分支了</p>
+<p>千万别运行那个</p>
 
-<p>换一台电脑，将远端<code>source</code>分支clone到本地</p>
-
-<pre><code>git clone -b source git@github.com:xxxxx
+<pre><code>sudo apt-get install gnome-shell
 </code></pre>
 
-<p>可以发现，在blog根目录中<code>_deploy</code>文件夹(可能没有)是空的(如果不是空的，请清空)，下一步是将远端<code>master</code>分支clone到本地的_deploy文件夹</p>
+<p>这个家伙会装上那个巨丑无比的gnome最新版的，真的好丑。
+装上gnome-panel之后，就可以在登陆界面选择了，怎么选就不解释了。</p>
 
-<pre><code>git clone -b master git@github.com:xxxxx _deploy
+<h3>sogou输入法</h3>
+
+<p>先删除ibus</p>
+
+<pre><code>sudo apt-get remove ibus
 </code></pre>
 
-<p>然后需要做一些安装配置的步骤</p>
+<p>卸载依赖</p>
 
-<pre><code>gem install bundler
-bundle install
+<pre><code>sudo apt-get autoremove
 </code></pre>
 
-<p>接下来<code>rake generate</code>就可以生成blog文件了。</p>
+<p>安装输入法</p>
 
-<p>需要注意的是，做完任何更改后（例如新增了一篇文章），需要提交到<code>source</code>分支</p>
-
-<pre><code>git add .
-git commit -am "Some comment here." 
-git push origin source  # update the remote source branch 
+<pre><code>sudo add-apt-repository ppa:fcitx-team/nightly
+sudo apt-get update
+sudo apt-get install fcitx-sogoupinyin
 </code></pre>
 
-<p>然后<code>rake deploy</code>来发布blog。</p>
+<p>剩下的找到fcitx配置，修改当前配置就好了，以您的智慧一看便懂了，友情提示，千万记得将换页修改为<code>,</code>和<code>.</code><br/>
+全部搞定只有注销重新登录或者重启一次就可以用了。</p>
 
-<p>当切换到另外一台电脑时候，同样需要把远端<code>source</code>和<code>master</code>分支的新内容pull到本地</p>
+<h3>QQ</h3>
 
-<pre><code>cd octopress
-git pull origin source  # update the local source branch
-cd ./_deploy
-git pull origin master  # update the local master branch
+<p>以前一直用<a href="https://github.com/xiehuc/pidgin-lwqq">lwqq</a>,这个还是很不错的。这个<a href="https://github.com/xiehuc/pidgin-lwqq">官方链接</a>里面只给出了通过源码的方式安装，并不是很方便，而且通过这种方式，我编译就没有通过。采用这个<a href="https://github.com/xiehuc/pidgin-lwqq/wiki/Install-On-Linux">链接</a>给出的方法，安装成功</p>
+
+<pre><code>$ sudo add-apt-repository ppa:lainme/pidgin-lwqq
+$ sudo apt-get update
+$ sudo apt-get install pidgin-lwqq
 </code></pre>
 
-<p>总结起来就是:<br/>
-1. 从远端<code>source</code>和<code>master</code>同步数据<br/>
-2. 写文章（或其他改动，例如更改theme）<br/>
-3. push到远端<code>source</code>分支<br/>
-4. <code>rake deploy</code>（相当于push到远端<code>master</code>分支）</p>
+<h3>ALT+TAB</h3>
+
+<p>这是一个老问题了，切换到gnome桌面环境的Ubuntu12.04 Alt+Tap组合键失效了，这玩笑开大了，还得了了。
+解决方法在<a href="https://bugs.launchpad.net/ubuntu/+source/compiz/+bug/971051">这里</a>,贴出来</p>
+
+<pre><code>1. Install packages:
+sudo apt-get install compiz-plugins compizconfig-settings-manager
+2. Run "ccsm"
+3. Scroll down to Window Management and enable (tick) "Application Switcher".
+</code></pre>
+
+<hr />
+
+<p>就先写这么多了，以后再贴。</p>
 </div>
 
 
@@ -214,12 +247,12 @@ git pull origin master  # update the local master branch
   
 
 
-<time datetime="2013-12-26T13:56:00+08:00" pubdate data-updated="true">Dec 26<span>th</span>, 2013</time>
+<time datetime="2014-01-13T20:42:00+08:00" pubdate data-updated="true">Jan 13<span>th</span>, 2014</time>
           
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/howto/'>howto</a>
+    <a class='category' href='/blog/categories/linux/'>linux</a>
   
 </span>
 
@@ -228,7 +261,7 @@ git pull origin master  # update the local master branch
         
           <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.orcame.com/blog/2013/12/26/octopress-multi-compoter/" data-via="" data-counturl="http://www.orcame.com/blog/2013/12/26/octopress-multi-compoter/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.orcame.com/blog/2014/01/13/after-install-ubuntu/" data-via="" data-counturl="http://www.orcame.com/blog/2014/01/13/after-install-ubuntu/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -242,10 +275,8 @@ git pull origin master  # update the local master branch
         
           <ul class="meta text-muted pager">
             
-            <li class="previous"><a class="clear-ba"  href="/blog/2013/12/26/git-memo/" title="Previous Post: git备忘录">&laquo; git备忘录</a></li>
+            <li class="previous"><a class="clear-ba"  href="/blog/2014/01/12/for-gfw/" title="Previous Post: 献给GFW">&laquo; 献给GFW</a></li>
             
-            
-            <li class="next"><a class="clear-ba" href="/blog/2013/12/29/windows-azure-sas-introduce/" title="Next Post: Windows Azure Shared Access Signature简介">Windows Azure Shared Access Signature简介 &raquo;</a></li>
             
           </ul>
         
@@ -275,7 +306,7 @@ $(document).ready(function(){
   
   <div id="recent_posts" class="list-group">
     
-    <a class="list-group-item " href="/blog/2014/01/13/after-install-ubuntu/">又折腾Linux系统</a>
+    <a class="list-group-item active" href="/blog/2014/01/13/after-install-ubuntu/">又折腾Linux系统</a>
     
     <a class="list-group-item " href="/blog/2014/01/12/for-gfw/">献给GFW</a>
     
@@ -467,8 +498,8 @@ $(document).ready(function(){
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.orcame.com/blog/2013/12/26/octopress-multi-compoter/';
-        var disqus_url = 'http://www.orcame.com/blog/2013/12/26/octopress-multi-compoter/';
+        var disqus_identifier = 'http://www.orcame.com/blog/2014/01/13/after-install-ubuntu/';
+        var disqus_url = 'http://www.orcame.com/blog/2014/01/13/after-install-ubuntu/';
         var disqus_script = 'embed.js';
       
     (function () {
