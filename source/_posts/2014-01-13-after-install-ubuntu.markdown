@@ -14,6 +14,8 @@ description: the things need to do after install ubuntu
 先是安装了fedora，fedora(gnome)界面简简单单，是我喜欢的风格，只是那个terminal不能背景透明真是很坑爹的(这个要怪gnome的)，非常不方便。  
 先来说说broadcom驱动的安装，网上有很多这个教程，均以失败告终。还是官方的比较靠谱，找到这个[下载链接](http://zh-cn.broadcom.com/support/802.11/linux_sta.php)，安装方法在README里面。简单来讲，有两种方法
 
+<!--more-->
+
 1. 通过源文件安装
 	这种方法比较繁琐，在上面链接中的[README](http://zh-cn.broadcom.com/docs/linux_sta/README.txt)里面有安装过程的说明，如果是和我一样linux小白的话，一定要认真阅读。
 2. 通过yum安装
